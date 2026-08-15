@@ -549,18 +549,17 @@ def smooth_glucose(values: pd.Series, method: str) -> pd.Series:
     raise ValueError(f"Unsupported smoothing method: {method}")
 
 
-def generate_recent_trend_labels(
+def generate_recent_trend_slopes(
     cgm: pd.DataFrame,
     bvp_spans: Sequence[TimeSpan],
     *,
     history_minutes: int,
-    threshold_mg_dl_min: float,
     smoothing: str,
     minimum_support_fraction: float,
     maximum_gap_minutes: float,
     slope_method: str = "ols",
 ) -> pd.DataFrame:
-    """Generate candidate labels using observations at or before each endpoint."""
+    """Generate causal candidate slopes using observations at or before each endpoint."""
 
     timestamps_ns = timestamps_to_ns(cgm["timestamp"])
     smoothed = smooth_glucose(cgm["glucose_mg_dl"], smoothing).to_numpy(dtype=float)
@@ -596,19 +595,11 @@ def generate_recent_trend_labels(
             slope = float(theilslopes(window_values, minutes).slope)
         else:
             raise ValueError(f"Unsupported slope method: {slope_method}")
-        label = (
-            "FALLING"
-            if slope < -threshold_mg_dl_min
-            else "RISING"
-            if slope > threshold_mg_dl_min
-            else "STABLE"
-        )
         rows.append(
             {
                 "timestamp": pd.Timestamp(endpoint_ns),
                 "history_start": pd.Timestamp(start_ns),
                 "slope_mg_dl_min": slope,
-                "label": label,
                 "support_points": int(window_times.size),
                 "slope_method": slope_method,
             }
@@ -619,11 +610,48 @@ def generate_recent_trend_labels(
             "timestamp",
             "history_start",
             "slope_mg_dl_min",
-            "label",
             "support_points",
             "slope_method",
         ],
     )
+
+
+def classify_trend_slopes(slopes: pd.DataFrame, threshold_mg_dl_min: float) -> pd.DataFrame:
+    """Classify already-computed causal slopes for one sensitivity threshold."""
+
+    labels = slopes.copy()
+    values = labels["slope_mg_dl_min"].to_numpy(dtype=float)
+    labels["label"] = np.where(
+        values < -threshold_mg_dl_min,
+        "FALLING",
+        np.where(values > threshold_mg_dl_min, "RISING", "STABLE"),
+    )
+    return labels
+
+
+def generate_recent_trend_labels(
+    cgm: pd.DataFrame,
+    bvp_spans: Sequence[TimeSpan],
+    *,
+    history_minutes: int,
+    threshold_mg_dl_min: float,
+    smoothing: str,
+    minimum_support_fraction: float,
+    maximum_gap_minutes: float,
+    slope_method: str = "ols",
+) -> pd.DataFrame:
+    """Generate causal candidate labels for one threshold."""
+
+    slopes = generate_recent_trend_slopes(
+        cgm,
+        bvp_spans,
+        history_minutes=history_minutes,
+        smoothing=smoothing,
+        minimum_support_fraction=minimum_support_fraction,
+        maximum_gap_minutes=maximum_gap_minutes,
+        slope_method=slope_method,
+    )
+    return classify_trend_slopes(slopes, threshold_mg_dl_min)
 
 
 def summarize_candidate_support(candidates: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -713,21 +741,21 @@ def audit_bigideas(
 
         protocols = config["candidate_trend_protocols"]
         for history in protocols["history_minutes"]:
-            for threshold in protocols["slope_threshold_mg_dl_min"]:
-                for smoothing in protocols["smoothing"]:
-                    for slope_method in protocols["slope_method"]:
-                        labels = generate_recent_trend_labels(
-                            cgm,
-                            bvp.spans,
-                            history_minutes=int(history),
-                            threshold_mg_dl_min=float(threshold),
-                            smoothing=str(smoothing),
-                            minimum_support_fraction=float(
-                                config["minimum_cgm_support_fraction"]
-                            ),
-                            maximum_gap_minutes=float(config["maximum_cgm_gap_minutes"]),
-                            slope_method=str(slope_method),
-                        )
+            for smoothing in protocols["smoothing"]:
+                for slope_method in protocols["slope_method"]:
+                    slopes = generate_recent_trend_slopes(
+                        cgm,
+                        bvp.spans,
+                        history_minutes=int(history),
+                        smoothing=str(smoothing),
+                        minimum_support_fraction=float(
+                            config["minimum_cgm_support_fraction"]
+                        ),
+                        maximum_gap_minutes=float(config["maximum_cgm_gap_minutes"]),
+                        slope_method=str(slope_method),
+                    )
+                    for threshold in protocols["slope_threshold_mg_dl_min"]:
+                        labels = classify_trend_slopes(slopes, float(threshold))
                         counts = (
                             labels["label"].value_counts()
                             if not labels.empty
