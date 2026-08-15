@@ -38,6 +38,8 @@ Read the project pack before changing scientific behavior:
 
 Stop for project-lead review before freezing State labels, Trend label parameters, split manifests, opening a final test set, changing the target or claims, adding a core predictor/dataset, promoting deep learning to primary, or promoting Model 2B to primary scope.
 
+Track preparation evidence and gate status in `docs/research/readiness_contract.md`. Record reviewed scientific decisions in `docs/research/decision_register.md`.
+
 ## Development conventions
 
 - Follow `RESEARCH_STANDARDS.md` for experiment evidence, reproducibility, compact records, and environment consistency.
