@@ -276,6 +276,22 @@ def intersect_duration_ns(left: Sequence[TimeSpan], right: Sequence[TimeSpan]) -
     return total
 
 
+def merge_time_spans(spans: Iterable[TimeSpan]) -> tuple[TimeSpan, ...]:
+    """Return the sorted union of possibly overlapping wall-clock spans."""
+
+    ordered = sorted(spans, key=lambda span: (span.start_ns, span.end_ns))
+    if not ordered:
+        return ()
+    merged = [ordered[0]]
+    for span in ordered[1:]:
+        current = merged[-1]
+        if span.start_ns <= current.end_ns:
+            merged[-1] = TimeSpan(current.start_ns, max(current.end_ns, span.end_ns))
+        else:
+            merged.append(span)
+    return tuple(merged)
+
+
 def span_covers(spans: Sequence[TimeSpan], start_ns: int, end_ns: int) -> bool:
     """Return whether one continuous span contains the complete interval."""
 
@@ -705,6 +721,16 @@ def audit_bigideas(
         cgm_spans = cgm_audit.spans
         row = dict(bvp.fields)
         row.update(cgm_audit.fields)
+        aligned_windows = [
+            TimeSpan(start, end)
+            for start, end in zip(
+                bvp.valid_window_starts_ns,
+                bvp.valid_window_ends_ns,
+                strict=True,
+            )
+            if span_covers(cgm_spans, start, end)
+        ]
+        unique_aligned_windows = merge_time_spans(aligned_windows)
         row.update(
             {
                 "participant_id": participant_id,
@@ -725,18 +751,13 @@ def audit_bigideas(
                 / NANOSECONDS_PER_SECOND
                 / 3600,
                 "valid_aligned_short_windows": sum(
-                    span_covers(cgm_spans, start, end)
-                    for start, end in zip(
-                        bvp.valid_window_starts_ns,
-                        bvp.valid_window_ends_ns,
-                        strict=True,
-                    )
+                    1 for _ in aligned_windows
                 ),
             }
         )
-        row["usable_aligned_hours"] = (
-            row["valid_aligned_short_windows"] * int(config["short_window_seconds"]) / 3600
-        )
+        row["usable_aligned_hours"] = sum(
+            span.end_ns - span.start_ns for span in unique_aligned_windows
+        ) / (NANOSECONDS_PER_SECOND * 3600)
         participant_rows.append(row)
 
         protocols = config["candidate_trend_protocols"]
@@ -807,6 +828,23 @@ def audit_bigideas(
             "overlap_hours": float(participants["overlap_hours"].sum()),
             "usable_aligned_hours": float(participants["usable_aligned_hours"].sum()),
         },
+        "anomalies": {
+            "bvp_duplicate_timestamps": int(participants["bvp_duplicate_timestamps"].sum()),
+            "bvp_backwards_timestamps": int(participants["bvp_backwards_timestamps"].sum()),
+            "bvp_gap_count": int(participants["bvp_gap_count"].sum()),
+            "bvp_constant_signals": int(participants["bvp_constant_signal"].sum()),
+            "cgm_invalid_timestamp_rows": int(
+                participants["cgm_invalid_timestamp_rows"].sum()
+            ),
+            "cgm_invalid_glucose_rows": int(participants["cgm_invalid_glucose_rows"].sum()),
+            "cgm_duplicate_timestamp_rows": int(
+                participants["cgm_duplicate_timestamp_rows"].sum()
+            ),
+            "cgm_backwards_timestamp_pairs": int(
+                participants["cgm_backwards_timestamp_pairs"].sum()
+            ),
+            "cgm_gap_count": int(participants["cgm_gap_count"].sum()),
+        },
         "candidate_protocol_totals": json.loads(support.to_json(orient="records")),
         "candidate_protocol_participant_support": json.loads(
             participant_support.to_json(orient="records")
@@ -832,6 +870,19 @@ def write_bigideas_artifacts(
     )
     totals = summary["participant_totals"]
     integrity = summary["source_integrity"]
+    anomalies = summary["anomalies"]
+    bvp_timestamp_anomalies = (
+        f"{anomalies['bvp_duplicate_timestamps']} / "
+        f"{anomalies['bvp_backwards_timestamps']}"
+    )
+    invalid_cgm_rows = (
+        f"{anomalies['cgm_invalid_timestamp_rows']} / "
+        f"{anomalies['cgm_invalid_glucose_rows']}"
+    )
+    cgm_timestamp_anomalies = (
+        f"{anomalies['cgm_duplicate_timestamp_rows']} / "
+        f"{anomalies['cgm_backwards_timestamp_pairs']}"
+    )
     verdict = (
         f"All {integrity['verified_files']} official files passed their published SHA-256 "
         f"digests. The audit accounted for {summary['participants']} participants. This "
@@ -851,6 +902,15 @@ def write_bigideas_artifacts(
 - Total BVP-CGM continuous overlap: {totals['overlap_hours']:.2f} hours
 - Usable aligned 30-second window-hours: {totals['usable_aligned_hours']:.2f} hours
 - Participant-level details: `bigideas_participants.csv`
+
+## Explicit anomalies
+
+- BVP duplicate / backward timestamps: {bvp_timestamp_anomalies}
+- BVP gaps over policy: {anomalies['bvp_gap_count']}
+- Constant BVP recordings: {anomalies['bvp_constant_signals']}
+- Invalid CGM timestamp / glucose rows: {invalid_cgm_rows}
+- CGM duplicate / backward timestamps: {cgm_timestamp_anomalies}
+- CGM gaps over policy: {anomalies['cgm_gap_count']}
 
 ## Candidate Trend sensitivity
 

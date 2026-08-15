@@ -1,0 +1,22 @@
+{
+  "expected_files": 130,
+  "verified_files": 130,
+  "missing_files": [],
+  "checksum_mismatches": [],
+  "unexpected_extracted_files": [],
+  "exact_destination_membership": true,
+  "all_official_files_verified": true,
+  "archive_membership": {
+    "expected_files": 130,
+    "matched_official_files": 130,
+    "missing_official_files": [],
+    "unexpected_archive_members": [],
+    "exact_archive_membership": true
+  },
+  "manifest_anchor": {
+    "sha256": "d2cd60ae6dd68e2848b06e9e50dc1f17699881121de5a7d6bd35f69210cfc3eb",
+    "entries": 130,
+    "anchor_verified": true
+  },
+  "integrity_pass": true
+}

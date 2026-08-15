@@ -16,6 +16,7 @@ from glycoband.datasets.bigideas import (
     intersect_duration_ns,
     load_cgm,
     match_archive_members,
+    merge_time_spans,
     parse_sha256_manifest,
     participant_source_paths,
     summarize_candidate_support,
@@ -98,6 +99,14 @@ def test_intersection_does_not_bridge_gaps() -> None:
     left = [TimeSpan(0, 10), TimeSpan(20, 30)]
     right = [TimeSpan(5, 25)]
     assert intersect_duration_ns(left, right) == 10
+
+
+def test_merge_time_spans_prevents_duplicate_wall_clock_duration() -> None:
+    merged = merge_time_spans(
+        [TimeSpan(0, 10), TimeSpan(5, 15), TimeSpan(20, 25), TimeSpan(20, 25)]
+    )
+    assert merged == (TimeSpan(0, 15), TimeSpan(20, 25))
+    assert sum(span.end_ns - span.start_ns for span in merged) == 20
 
 
 def test_recent_trend_uses_no_future_points() -> None:

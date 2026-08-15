@@ -24,8 +24,8 @@ Every entry requires evidence, a reviewer, and a version before its status becom
 - **Approval status:** `NOT_STARTED`
 - **Approval date:** Not applicable before approval.
 - **Decision:** No Trend history, slope, threshold, smoothing, support, alignment, gap, or stride policy has been selected.
-- **Evidence considered:** None; the BIG IDEAs audit has not been completed.
-- **Required evidence:** BIG IDEAs coverage audit and candidate-protocol results restricted to train/validation periods.
+- **Evidence considered:** BIG IDEAs v1.1.3 integrity, coverage, anomaly, and 81-protocol sensitivity audit completed and independently accepted; no Trend protocol review has opened.
+- **Required evidence:** Project-lead review of candidate history, threshold, smoothing, slope, alignment, gap, and chronological split policies before any version is approved.
 - **Alternatives rejected:** None; decision review has not opened.
 - **Reviewer:** Project lead.
 - **Supersedes:** None.
@@ -52,8 +52,8 @@ Every entry requires evidence, a reviewer, and a version before its status becom
 - **Approval status:** `NOT_STARTED`
 - **Approval date:** Not applicable before approval.
 - **Decision:** No chronological split has been frozen.
-- **Evidence considered:** None; coverage, history, and gap evidence are incomplete.
-- **Required evidence:** Per-participant coverage, selected history window, and gap statistics.
+- **Evidence considered:** Per-participant coverage, gap, anomaly, and candidate-history support are audited; no split policy has been approved.
+- **Required evidence:** Approved Trend label definition plus a chronological split proposal whose embargo is at least the selected history.
 - **Alternatives rejected:** None; decision review has not opened.
 - **Reviewer:** Project lead.
 - **Supersedes:** None.
@@ -80,8 +80,8 @@ Every entry requires evidence, a reviewer, and a version before its status becom
 - **Approval status:** `NOT_STARTED`
 - **Approval date:** Not applicable before approval.
 - **Decision:** No implementation architecture has been approved beyond the repository scaffold.
-- **Evidence considered:** Hb-PPG raw schema and signal behavior are measured; BIG IDEAs acquisition and full audit remain incomplete.
-- **Required evidence:** Completed BIG IDEAs file verification and audit, measured memory/timestamp/alignment behavior, audit failure modes, and frozen task contracts.
+- **Evidence considered:** Both raw datasets, schema, signal rates, file integrity, timestamp anomalies, alignment, and candidate support have been measured; task contracts remain unfrozen.
+- **Required evidence:** Project-lead-approved State and Trend labels/splits, followed by a bounded architecture and experiment-readiness review.
 - **Alternatives rejected:** Premature microservices, orchestration platforms, and deep-learning infrastructure are rejected without measured need.
 - **Reviewer:** Project lead.
 - **Supersedes:** None.
