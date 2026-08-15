@@ -39,6 +39,7 @@ wandb/
 !README.md
 
 # Keep compact, reviewable readiness evidence (not execution logs)
+!reports/audits/environment_preflight.json
 !reports/audits/hbppg_audit.json
 !reports/audits/hbppg_audit.md
 !reports/audits/hbppg_participants.csv

@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-08-15T16:13:46.733208+00:00",
+  "repository": {
+    "commit": "2c8a5133b4e5af9ca0207217b1c7b6777cbd0f0b",
+    "dirty": false
+  },
+  "runtime": {
+    "python": "3.11.15",
+    "implementation": "CPython",
+    "executable": "D:\\Competitions\\UI NEST - GlycoBand\\.venv\\Scripts\\python.exe",
+    "operating_system": "Windows-10-10.0.26200-SP0",
+    "architecture": "AMD64"
+  },
+  "lockfile": {
+    "path": "uv.lock",
+    "sha256": "e945776ad758d0181a2f243cc5f1cd13f1bf9de9b1df63064d47c1ded47b3fbb"
+  },
+  "storage": {
+    "archive_bytes": 5062038014,
+    "uncompressed_bytes": 34264727880,
+    "working_reserve_bytes": 10000000000,
+    "total_required_bytes": 49326765894,
+    "already_acquired_bytes": 5062038014,
+    "remaining_required_bytes": 44264727880,
+    "current_free_bytes": 44532690944,
+    "headroom_after_acquisition_bytes": 267963064,
+    "gate": "PASS"
+  },
+  "source_access": {
+    "gate": "PASS",
+    "manifest": "data\\manifests\\source_manifest.json"
+  },
+  "checks": [
+    {
+      "name": "sync",
+      "command": [
+        "uv",
+        "sync",
+        "--frozen"
+      ],
+      "passed": true,
+      "return_code": 0,
+      "summary": "Checked 43 packages in 1ms"
+    },
+    {
+      "name": "lock",
+      "command": [
+        "uv",
+        "lock",
+        "--check"
+      ],
+      "passed": true,
+      "return_code": 0,
+      "summary": "Resolved 51 packages in 0.68ms"
+    },
+    {
+      "name": "tests",
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "pytest",
+        "-q"
+      ],
+      "passed": true,
+      "return_code": 0,
+      "summary": "..................................................                       [100%]\n50 passed in 1.91s"
+    },
+    {
+      "name": "lint",
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "ruff",
+        "check",
+        "."
+      ],
+      "passed": true,
+      "return_code": 0,
+      "summary": "All checks passed!"
+    },
+    {
+      "name": "types",
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "mypy"
+      ],
+      "passed": true,
+      "return_code": 0,
+      "summary": "Success: no issues found in 16 source files"
+    }
+  ],
+  "environment_gate": "PASS"
+}
