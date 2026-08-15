@@ -1,0 +1,31 @@
+schema_version: 1
+dataset: hbppg-v6
+sampling_rate_hz: 200
+expected_participants: 252
+required_channels: [660nm, 730nm, 850nm, 940nm]
+
+descriptive_signal_screen:
+  pulse_band_hz: [0.5, 4.0]
+  spectral_reference_band_hz: [0.1, 10.0]
+  minimum_pulse_band_ratio: 0.10
+  maximum_flat_difference_fraction: 0.20
+  maximum_extrema_fraction: 0.05
+
+candidate_glucose_schemes:
+  ada_fpg_ranges:
+    source: https://diabetes.org/about-diabetes/diagnosis
+    categories:
+      - {name: NORMAL_RANGE, lower: null, upper: 5.6}
+      - {name: PREDIABETES_RANGE, lower: 5.6, upper: 7.0}
+      - {name: DIABETES_RANGE, lower: 7.0, upper: null}
+  who_fpg_ranges:
+    source: https://iris.who.int/handle/10665/43588
+    categories:
+      - {name: BELOW_IFG_THRESHOLD, lower: null, upper: 6.1}
+      - {name: IFG_RANGE, lower: 6.1, upper: 7.0}
+      - {name: DIABETES_RANGE, lower: 7.0, upper: null}
+  low_glucose_screen:
+    source: https://diabetes.org/living-with-diabetes/hypoglycemia-low-blood-glucose
+    categories:
+      - {name: BELOW_3_9, lower: null, upper: 3.9}
+      - {name: AT_OR_ABOVE_3_9, lower: 3.9, upper: null}

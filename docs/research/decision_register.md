@@ -10,8 +10,8 @@ Every entry requires evidence, a reviewer, and a version before its status becom
 - **Approval status:** `NOT_STARTED`
 - **Approval date:** Not applicable before approval.
 - **Decision:** No State formulation has been selected.
-- **Evidence considered:** None; the Hb-PPG audit has not been completed.
-- **Required evidence:** Hb-PPG glucose distribution, candidate clinical definitions, participant support per class, and claim consequences.
+- **Evidence considered:** Hb-PPG v6 raw-data audit completed and independently accepted; no label review has opened.
+- **Required evidence:** Project-lead review of the audited glucose distribution, candidate clinical definitions, participant support per class, and claim consequences.
 - **Alternatives rejected:** None; decision review has not opened.
 - **Reviewer:** Project lead.
 - **Supersedes:** None.
@@ -80,8 +80,8 @@ Every entry requires evidence, a reviewer, and a version before its status becom
 - **Approval status:** `NOT_STARTED`
 - **Approval date:** Not applicable before approval.
 - **Decision:** No implementation architecture has been approved beyond the repository scaffold.
-- **Evidence considered:** Repository scaffold only; measured raw-data behavior is not available.
-- **Required evidence:** Measured schemas, file sizes, memory behavior, timestamps, alignment, audit failure modes, and frozen task contracts.
+- **Evidence considered:** Hb-PPG raw schema and signal behavior are measured; BIG IDEAs acquisition and full audit remain incomplete.
+- **Required evidence:** Completed BIG IDEAs file verification and audit, measured memory/timestamp/alignment behavior, audit failure modes, and frozen task contracts.
 - **Alternatives rejected:** Premature microservices, orchestration platforms, and deep-learning infrastructure are rejected without measured need.
 - **Reviewer:** Project lead.
 - **Supersedes:** None.

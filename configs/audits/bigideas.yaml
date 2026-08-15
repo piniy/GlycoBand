@@ -1,0 +1,21 @@
+schema_version: 1
+dataset: bigideas-v1.1.3
+expected_participants: 16
+official_manifest_sha256: d2cd60ae6dd68e2848b06e9e50dc1f17699881121de5a7d6bd35f69210cfc3eb
+official_manifest_entries: 130
+bvp_rate_hz: 64
+short_window_seconds: 30
+maximum_bvp_gap_seconds: 0.03125
+maximum_cgm_gap_minutes: 10
+minimum_cgm_support_fraction: 0.80
+
+candidate_trend_protocols:
+  history_minutes: [15, 30, 60]
+  slope_threshold_mg_dl_min: [0.5, 1.0, 1.5]
+  smoothing: [none, median3, mean3]
+  slope_method: [ols, endpoint_delta, theil_sen]
+
+notes:
+  - Candidate protocols are audit sensitivity analyses, not frozen labels.
+  - Every label uses CGM observations at or before its timestamp.
+  - Final stride and alignment policy require project-lead review after the audit.

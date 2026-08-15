@@ -61,6 +61,13 @@ Run:
 
 ```powershell
 uv run --frozen python scripts/verify_sources.py
+uv run --frozen python scripts/download_bigideas.py
+uv run --frozen python scripts/audit_hbppg.py
+uv run --frozen python scripts/audit_bigideas.py
 ```
 
-The command verifies live metadata, the local Hb-PPG archive, the BIG IDEAs ZIP endpoint, the official checksum manifest, the license file, and current storage headroom. It writes `data/manifests/source_manifest.json`.
+Source verification checks live metadata, the local Hb-PPG archive, the BIG IDEAs ZIP endpoint,
+the official checksum manifest, the license file, durable download checkpoints, and current storage
+headroom. The BIG downloader is resumable and binds its checkpoints to the exact URL, byte size,
+and range plan. The BIG audit accepts extraction only after exact archive membership and every
+official extracted-file SHA-256 pass.

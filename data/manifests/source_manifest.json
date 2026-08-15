@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "verified_at_utc": "2026-08-15T12:53:29.145016+00:00",
+  "verified_at_utc": "2026-08-15T13:35:12.254791+00:00",
   "download_authority": {
     "confirmed": true,
     "confirmed_on": "2026-08-15",
@@ -46,8 +46,10 @@
       "license_file_sha256": "86c0ad300f6d380591298bc03652e30b81f65954bbf22435812bcfd46812ab06",
       "local_archive": {
         "path": "data/raw/bigideas/big-ideas-glycemic-wearable-1.1.3.zip",
-        "exists": false,
-        "bytes": 0,
+        "exists": true,
+        "logical_bytes": 5015250233,
+        "download_complete": false,
+        "completed_checkpoint_bytes": 285212672,
         "sha256": null
       },
       "source_status": "VERIFIED",
@@ -59,10 +61,10 @@
     "uncompressed_bytes": 34264727880,
     "working_reserve_bytes": 10000000000,
     "total_required_bytes": 49326765894,
-    "already_acquired_bytes": 46787781,
-    "remaining_required_bytes": 49279978113,
-    "current_free_bytes": 86510936064,
-    "headroom_after_acquisition_bytes": 37230957951,
+    "already_acquired_bytes": 332000453,
+    "remaining_required_bytes": 48994765441,
+    "current_free_bytes": 81389060096,
+    "headroom_after_acquisition_bytes": 32394294655,
     "gate": "PASS"
   },
   "source_gate": "PASS"

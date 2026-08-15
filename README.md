@@ -24,7 +24,9 @@ The datasets remain separate because their sensors, placement, reference modalit
 
 ## Repository status
 
-The repository is initialized as a research scaffold. No dataset audit, label freeze, split freeze, training run, held-out result, synthetic robustness result, or physical-device validation has been completed yet.
+The repository and source gate are initialized. The Hb-PPG v6 raw-data audit is complete; BIG
+IDEAs acquisition and audit remain in progress. No label freeze, split freeze, training run,
+held-out result, synthetic robustness result, or physical-device validation has been completed.
 
 The authoritative research instructions are in [`Agent/00_INDEX.md`](Agent/00_INDEX.md) through [`Agent/05_EXPERIMENT_AGENT.md`](Agent/05_EXPERIMENT_AGENT.md). See [`AGENTS.md`](AGENTS.md) for repository-wide operating rules and [`RESEARCH_STANDARDS.md`](RESEARCH_STANDARDS.md) for the concise research, reproducibility, and environment policy.
 
@@ -51,6 +53,7 @@ Do not modify raw files. Store checksums and source/version records in `data/man
 
 ## Current next gate
 
-Verify dataset source versions, checksums, and manifests, then complete the Hb-PPG and BIG IDEAs audits. Scientific labels and split manifests require human review before they are frozen.
+Complete the checksum-verified BIG IDEAs acquisition and raw-data audit. Scientific labels and
+split manifests require human review before they are frozen.
 
 The preparation sequence is defined in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). The plan must reach its final readiness gate before architecture implementation or model experimentation begins.

@@ -7,6 +7,7 @@ import json
 import re
 import shutil
 import urllib.request
+import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -71,6 +72,28 @@ def calculate_storage_budget(
     }
 
 
+def ranged_checkpoint_bytes(progress_path: Path, expected_bytes: int) -> int:
+    """Count only ranges durably checkpointed by the v2 downloader."""
+
+    if not progress_path.is_file():
+        return 0
+    payload = json.loads(progress_path.read_text(encoding="utf-8"))
+    if payload.get("schema_version") != 2 or payload.get("expected_bytes") != expected_bytes:
+        raise ValueError("Ranged-download progress does not match the source contract")
+    chunk_bytes = payload.get("chunk_bytes")
+    completed = payload.get("completed_ranges")
+    if not isinstance(chunk_bytes, int) or chunk_bytes <= 0:
+        raise ValueError("Ranged-download progress has an invalid chunk size")
+    if not isinstance(completed, list) or not all(isinstance(index, int) for index in completed):
+        raise ValueError("Ranged-download progress has invalid completed indexes")
+    total_ranges = (expected_bytes + chunk_bytes - 1) // chunk_bytes
+    if any(index < 0 or index >= total_ranges for index in completed):
+        raise ValueError("Ranged-download progress has an out-of-range index")
+    return sum(
+        min(chunk_bytes, expected_bytes - index * chunk_bytes) for index in set(completed)
+    )
+
+
 def _load_yaml(path: Path) -> dict[str, Any]:
     loaded = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(loaded, dict):
@@ -129,6 +152,16 @@ def build_source_manifest(repo_root: Path, config_path: Path) -> dict[str, objec
     big_path = root / big_config["archive"]["local_path"]
     big_local_exists = big_path.is_file()
     big_local_size = big_path.stat().st_size if big_local_exists else 0
+    big_progress_path = big_path.with_suffix(big_path.suffix + ".ranges.json")
+    big_checkpoint_bytes = ranged_checkpoint_bytes(
+        big_progress_path, big_config["archive"]["expected_bytes"]
+    )
+    big_archive_complete = bool(
+        big_local_exists
+        and big_local_size == big_config["archive"]["expected_bytes"]
+        and not big_progress_path.exists()
+        and zipfile.is_zipfile(big_path)
+    )
     big_verified = bool(
         big_remote_bytes == big_config["archive"]["expected_bytes"]
         and len(checksum_entries) > 0
@@ -142,7 +175,9 @@ def build_source_manifest(repo_root: Path, config_path: Path) -> dict[str, objec
         hb_config["archive"]["project_verified_uncompressed_bytes"]
         + big_config["archive"]["reported_uncompressed_bytes"]
     )
-    already_acquired = hb_local_size + big_local_size
+    already_acquired = hb_local_size + (
+        big_local_size if big_archive_complete else big_checkpoint_bytes
+    )
     free_bytes = shutil.disk_usage(root / "data").free
     storage = calculate_storage_budget(
         archive_bytes,
@@ -199,8 +234,10 @@ def build_source_manifest(repo_root: Path, config_path: Path) -> dict[str, objec
                 "local_archive": {
                     "path": big_config["archive"]["local_path"],
                     "exists": big_local_exists,
-                    "bytes": big_local_size,
-                    "sha256": hash_file(big_path, "sha256") if big_local_exists else None,
+                    "logical_bytes": big_local_size,
+                    "download_complete": big_archive_complete,
+                    "completed_checkpoint_bytes": big_checkpoint_bytes,
+                    "sha256": hash_file(big_path, "sha256") if big_archive_complete else None,
                 },
                 "source_status": "VERIFIED" if big_verified else "NO_GO",
                 "post_extraction_requirement": (

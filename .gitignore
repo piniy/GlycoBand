@@ -37,3 +37,14 @@ wandb/
 # Keep directory documentation/placeholders
 !.gitkeep
 !README.md
+
+# Keep compact, reviewable readiness evidence (not execution logs)
+!reports/audits/hbppg_audit.json
+!reports/audits/hbppg_audit.md
+!reports/audits/hbppg_participants.csv
+!reports/audits/bigideas_audit.json
+!reports/audits/bigideas_audit.md
+!reports/audits/bigideas_participants.csv
+!reports/audits/bigideas_trend_candidates.csv
+!reports/figures/hbppg_glucose_ecdf.png
+!reports/figures/hbppg_representative_signals.png
