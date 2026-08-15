@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "verified_at_utc": "2026-08-15T12:53:29.145016+00:00",
+  "download_authority": {
+    "confirmed": true,
+    "confirmed_on": "2026-08-15",
+    "scope": [
+      "hbppg-v6",
+      "bigideas-v1.1.3"
+    ]
+  },
+  "datasets": {
+    "hbppg": {
+      "version": 6,
+      "doi": "10.6084/m9.figshare.22256143.v6",
+      "license": "CC BY 4.0",
+      "remote_archive": {
+        "file_id": 59822060,
+        "name": "Hb_PPG_Dataset.zip",
+        "bytes": 46787781,
+        "md5": "59bd26271695e5e9ada8e42c841568b5"
+      },
+      "local_archive": {
+        "path": "data/raw/hbppg/Hb_PPG_Dataset.zip",
+        "exists": true,
+        "bytes": 46787781,
+        "md5": "59bd26271695e5e9ada8e42c841568b5"
+      },
+      "source_status": "VERIFIED"
+    },
+    "bigideas": {
+      "version": "1.1.3",
+      "doi": "10.13026/aw6y-fc44",
+      "license": "Open Data Commons Attribution License v1.0",
+      "remote_archive": {
+        "name": "big-ideas-glycemic-wearable-1.1.3.zip",
+        "bytes": 5015250233,
+        "official_archive_checksum": null
+      },
+      "official_file_checksums": {
+        "algorithm": "sha256",
+        "manifest_url": "https://physionet.org/files/big-ideas-glycemic-wearable/1.1.3/SHA256SUMS.txt",
+        "manifest_sha256": "d2cd60ae6dd68e2848b06e9e50dc1f17699881121de5a7d6bd35f69210cfc3eb",
+        "entry_count": 130
+      },
+      "license_file_sha256": "86c0ad300f6d380591298bc03652e30b81f65954bbf22435812bcfd46812ab06",
+      "local_archive": {
+        "path": "data/raw/bigideas/big-ideas-glycemic-wearable-1.1.3.zip",
+        "exists": false,
+        "bytes": 0,
+        "sha256": null
+      },
+      "source_status": "VERIFIED",
+      "post_extraction_requirement": "Verify every extracted file against the official SHA256 manifest."
+    }
+  },
+  "storage": {
+    "archive_bytes": 5062038014,
+    "uncompressed_bytes": 34264727880,
+    "working_reserve_bytes": 10000000000,
+    "total_required_bytes": 49326765894,
+    "already_acquired_bytes": 46787781,
+    "remaining_required_bytes": 49279978113,
+    "current_free_bytes": 86510936064,
+    "headroom_after_acquisition_bytes": 37230957951,
+    "gate": "PASS"
+  },
+  "source_gate": "PASS"
+}

@@ -59,6 +59,7 @@ def collect_preflight(
     repo_root: Path,
     checks: Sequence[CheckSpec] = DEFAULT_CHECKS,
     runner: CommandRunner = _run,
+    source_manifest_path: Path | None = None,
 ) -> dict[str, object]:
     """Collect environment and verification evidence without exposing secrets."""
 
@@ -70,6 +71,11 @@ def collect_preflight(
     git_commit = runner(("git", "rev-parse", "HEAD"), root)
     git_status = runner(("git", "status", "--porcelain"), root)
     disk = shutil.disk_usage(root / "data")
+    resolved_source_manifest = (
+        source_manifest_path
+        if source_manifest_path is not None
+        else root / "data/manifests/source_manifest.json"
+    )
 
     check_results: list[dict[str, object]] = []
     for check in checks:
@@ -83,6 +89,31 @@ def collect_preflight(
                 "summary": (result.stdout or result.stderr).strip()[-1000:],
             }
         )
+
+    storage: dict[str, object] = {
+        "data_volume_total_bytes": disk.total,
+        "data_volume_free_bytes": disk.free,
+        "required_bytes": None,
+        "gate": "DATA_REQUIRED",
+        "reason": "Official source sizes and derived-data reserve are not verified yet.",
+    }
+    source_access: dict[str, object] = {
+        "gate": "IN_PROGRESS",
+        "reason": "Official source identity and access conditions are handled by Gate B.",
+    }
+    if resolved_source_manifest.is_file():
+        source_manifest = json.loads(resolved_source_manifest.read_text(encoding="utf-8"))
+        manifest_storage = source_manifest.get("storage")
+        if isinstance(manifest_storage, dict):
+            storage = manifest_storage
+        try:
+            manifest_display_path = str(resolved_source_manifest.relative_to(root))
+        except ValueError:
+            manifest_display_path = str(resolved_source_manifest)
+        source_access = {
+            "gate": source_manifest.get("source_gate", "NO_GO"),
+            "manifest": manifest_display_path,
+        }
 
     return {
         "schema_version": 1,
@@ -102,17 +133,8 @@ def collect_preflight(
             "path": "uv.lock",
             "sha256": sha256_file(lock_path),
         },
-        "storage": {
-            "data_volume_total_bytes": disk.total,
-            "data_volume_free_bytes": disk.free,
-            "required_bytes": None,
-            "gate": "DATA_REQUIRED",
-            "reason": "Official source sizes and derived-data reserve are not verified yet.",
-        },
-        "source_access": {
-            "gate": "IN_PROGRESS",
-            "reason": "Official source identity and access conditions are handled by Gate B.",
-        },
+        "storage": storage,
+        "source_access": source_access,
         "checks": check_results,
         "environment_gate": "PASS"
         if (

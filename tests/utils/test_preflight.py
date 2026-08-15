@@ -36,7 +36,11 @@ def test_sha256_file(tmp_path: Path) -> None:
 def test_collect_preflight_without_running_checks() -> None:
     repo_root = Path(__file__).resolve().parents[2]
 
-    report = collect_preflight(repo_root, checks=())
+    report = collect_preflight(
+        repo_root,
+        checks=(),
+        source_manifest_path=repo_root / "does-not-exist.json",
+    )
 
     assert report["schema_version"] == 1
     assert report["environment_gate"] == "NO_GO"
@@ -107,3 +111,23 @@ def test_write_preflight_serializes_compact_json(tmp_path: Path) -> None:
 
     assert json.loads(output.read_text(encoding="utf-8")) == report
     assert output.read_text(encoding="utf-8").endswith("\n")
+
+
+def test_collect_preflight_uses_verified_source_manifest(tmp_path: Path) -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    source_manifest = tmp_path / "source_manifest.json"
+    source_manifest.write_text(
+        json.dumps({"source_gate": "PASS", "storage": {"gate": "PASS"}}),
+        encoding="utf-8",
+    )
+    checks = (CheckSpec("example", ("example",)),)
+
+    report = collect_preflight(
+        repo_root,
+        checks=checks,
+        runner=clean_runner,
+        source_manifest_path=source_manifest,
+    )
+
+    assert report["storage"] == {"gate": "PASS"}
+    assert report["source_access"]["gate"] == "PASS"  # type: ignore[index]
