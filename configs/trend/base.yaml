@@ -1,0 +1,35 @@
+dataset:
+  name: big_ideas
+  version: 1.1.3
+
+task:
+  name: recent_trend
+  classes: [FALLING, STABLE, RISING]
+
+input:
+  core_predictor: bvp_history_only
+  native_bvp_rate_hz: 64
+
+windowing:
+  short_window_seconds: 30
+  history_candidates_minutes: [15, 30, 60]
+  stride: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+
+label_generation:
+  source: cgm_history_ending_at_t
+  slope_method: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+  threshold: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+  smoothing: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+  minimum_cgm_points: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+  alignment_policy: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+  gap_policy: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+
+split:
+  type: within_person_chronological
+  embargo: at_least_history_window
+  manifest: TBD_AFTER_HUMAN_REVIEW
+
+evaluation:
+  primary_metric: macro_f1
+  per_participant: true
+  opposite_direction_error: true

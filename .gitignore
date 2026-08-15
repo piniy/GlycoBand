@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Raw and derived datasets
+data/raw/hbppg/*
+data/raw/bigideas/*
+data/interim/*
+data/processed/state/*
+data/processed/trend/*
+
+# Generated experiment and report artifacts
+reports/audits/*
+reports/experiments/*
+reports/figures/*
+reports/tables/*
+reports/final/*
+
+# Local experiment tracking and secrets
+mlruns/
+wandb/
+.env
+.env.*
+!.env.example
+
+# Keep directory documentation/placeholders
+!.gitkeep
+!README.md

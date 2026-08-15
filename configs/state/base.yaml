@@ -1,0 +1,24 @@
+dataset:
+  name: hbppg
+  version: v6
+
+task:
+  name: fasting_state
+  type: classification
+
+input:
+  wavelengths_nm: [660, 730, 850, 940]
+  core_predictor: ppg_only
+
+labels:
+  formulation: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+  clinical_reference: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+  categories: TBD_AFTER_AUDIT_AND_HUMAN_REVIEW
+
+split:
+  type: participant_aware
+  manifest: TBD_AFTER_HUMAN_REVIEW
+
+evaluation:
+  primary_metric: macro_f1
+  bootstrap_unit: participant
