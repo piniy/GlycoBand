@@ -381,7 +381,9 @@ def audit_bvp_csv(
         valid_pairs = valid[:-1] & valid[1:]
         differences = np.diff(times)
         valid_deltas = differences[valid_pairs]
-        delta_counts.update(int(value) for value in valid_deltas)
+        unique_deltas, delta_frequencies = np.unique(valid_deltas, return_counts=True)
+        for delta, frequency in zip(unique_deltas, delta_frequencies, strict=True):
+            delta_counts[int(delta)] += int(frequency)
         duplicate_timestamps += int(np.sum(valid_deltas == 0))
         backwards_timestamps += int(np.sum(valid_deltas < 0))
         positive_deltas = valid_deltas[valid_deltas > 0]
