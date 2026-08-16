@@ -9,7 +9,7 @@ This is the single status page for preparation before architecture implementatio
 - `NOT_STARTED`: no qualifying evidence yet.
 - `IN_PROGRESS`: evidence is being collected but the gate is not satisfied.
 - `PASS`: every exit condition is satisfied.
-- `DATA_REQUIRED`: required source data or metadata is unavailable.
+- `DATA_REQUIRED`:bisa  required source data or metadata is unavailable.
 - `NO_GO`: evidence shows the proposed task is not defensible.
 - `SUPERSEDED`: a newer version replaces this decision or artifact.
 
