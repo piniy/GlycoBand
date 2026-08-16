@@ -61,7 +61,10 @@ A result is reproducible when another clean checkout can use the recorded code, 
 
 ### Minimum experiment artifact set
 
-Store each completed run under reports/experiments/<experiment_id>/
+Store each completed run under:
+
+```text
+reports/experiments/<experiment_id>/
     config.yaml
     environment.txt
     dataset_manifest.json
@@ -193,4 +196,4 @@ Failure of a gate means the result is exploratory, blocked, or insufficient evid
 - `Agent/05_EXPERIMENT_AGENT.md` defines experiment gates and required controls.
 - `AGENTS.md` defines repository-wide precedence and human review gates.
 
-→ figures are required when scientifically informative
+Figures are required when scientifically informative.

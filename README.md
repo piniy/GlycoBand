@@ -25,10 +25,11 @@ The datasets remain separate because their sensors, placement, reference modalit
 ## Repository status
 
 Readiness Gates A-C are complete: the environment, source identity/storage, and raw-data audits
-for Hb-PPG v6 and BIG IDEAs v1.1.3 have passed. The State label definition is now frozen as
-Candidate A (binary 5.6 mmol/L boundary), but the State participant split, model protocol, and
-final-test access remain unapproved. No registered State model, held-out result, synthetic
-robustness result, or physical-device validation has been completed.
+for Hb-PPG v6 and BIG IDEAs v1.1.3 have passed. The State label definition remains frozen as
+Candidate A (binary 5.6 mmol/L boundary), but State research is `PARKED`: its development-only
+probe did not support incremental PPG learnability on the current representation, so no State
+split or model protocol is active. No registered model, held-out result, synthetic robustness
+result, or physical-device validation has been completed.
 
 The authoritative research instructions are [`Agent/AGENTS.md`](Agent/AGENTS.md) and
 [`Agent/01_CONTEXT.md`](Agent/01_CONTEXT.md) through
@@ -57,11 +58,14 @@ data/raw/bigideas/
 
 Do not modify raw files. Store checksums and source/version records in `data/manifests/`; write aligned native-derived data to `data/interim/` and model-ready data to `data/processed/`.
 
-## Current next gate
+## Current frontier: Trend
 
-The current State decision record is [`docs/research/decision_register.md`](docs/research/decision_register.md)
-and the chronological rationale is [`docs/research/journal.md`](docs/research/journal.md). The
-State split and model protocol still require explicit project-lead review before registered work;
-the 44-person final reserve remains sealed.
+The active work is to establish the BIG IDEAs Trend label protocol and chronological split using
+development data only. The State decision record is
+[`docs/research/decision_register.md`](docs/research/decision_register.md), and its final
+development-only resolution is in
+[`reports/probes/state_exploratory-v1/decision_record.md`](reports/probes/state_exploratory-v1/decision_record.md).
+The 44-person State reserve remains sealed; reopening State requires an explicit project-lead
+decision.
 
-The completed preparation sequence is retained in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). After label and split contracts are frozen, a task-specific baseline may use training and validation partitions only. The final test remains sealed until its separate access decision is frozen.
+The completed preparation sequence is retained in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). After the Trend label and split contracts are frozen, its task-specific baseline may use training and validation partitions only. The final test remains sealed until its separate access decision is frozen.

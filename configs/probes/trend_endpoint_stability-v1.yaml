@@ -1,0 +1,12 @@
+experiment_id: trend_endpoint_stability-v1
+evidence_level: exploratory_development_only
+dataset: bigideas-v1.1.3
+raw_dataset_root: data/raw/bigideas/v1.1.3
+source_audit_config: configs/audits/bigideas.yaml
+primary_candidate_id: primary_h30_tau0p5_median3_ols
+final_test_accessed: false
+chronological_split_created: false
+registered_model_started: false
+notes:
+  - This is a development-only label-stability probe, not a frozen Trend label config.
+  - No chronological split or final reserve is created or inspected.

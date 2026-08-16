@@ -1,6 +1,6 @@
 # State Decisive Exploratory Experiment — Decision Record
 
-Status: **development-only; Candidate A label FROZEN, State model and split remain PENDING**
+Status: **development-only; Candidate A label FROZEN, State research PARKED**
 
 ## Question
 
@@ -60,3 +60,12 @@ The binary Candidate A remains the only adequately supported State formulation. 
 Exploratory decision: **the incremental PPG contribution is not supported**. The paired gain is no larger than the permutation null, and the combined model has lower macro PR-AUC than context-only. Candidate A remains a label-support candidate, not a learnability-supported State claim.
 
 Do not register or freeze the modeling protocol automatically. Project-lead review must decide whether the observed paired gain, class-wise behavior, and permutation result are strong enough to freeze Candidate A and proceed to a registered State experiment. The claim ceiling remains feasibility-only until that registered experiment and one-time reserved-test evaluation are complete.
+
+## Final resolution
+
+State research is `PARKED`. Candidate A remains the frozen label definition, but the current
+representation does not justify a registered State split, model protocol, training run, or final
+reserve evaluation. This is not evidence that PPG cannot contain fasting-State information; it is
+an evidence-bound decision not to advance the current State representation. This supersedes the
+conditional recommendation above. Reopening State requires an explicit project-lead decision and
+a documented reason to revisit the evidence.

@@ -9,6 +9,7 @@ when its evidence exists and the required reviewer has accepted it.
 
 - `NOT_STARTED`: no qualifying evidence yet.
 - `IN_PROGRESS`: evidence is being collected but the gate is not satisfied.
+- `PARKED`: work is intentionally inactive; reopening requires a new project-lead decision.
 - `PASS`: every exit condition is satisfied.
 - `DATA_REQUIRED`: required source data or metadata is unavailable.
 - `NO_GO`: evidence shows the proposed task is not defensible.
@@ -21,7 +22,7 @@ when its evidence exists and the required reviewer has accepted it.
 | A — Repository and environment | Committed Git baseline, clean evidence capture, locked environment restores, tests/lint/types pass | Repository maintainer | `PASS` | `reports/audits/environment_preflight.json` | None when the report records a commit, `dirty=false`, successful sync, and all checks passing | Automated checks |
 | B — Source and storage | Exact sources, access, license, sizes, checksums, and storage budget verified | Data preparation owner | `PASS` | `configs/data_sources.yaml`; `data/manifests/source_manifest.json`; `docs/research/source_verification.md` | None; both authorized archives are locally complete | Project lead authorized required downloads on 2026-08-15 |
 | C — Raw-data audits | Hb-PPG and BIG IDEAs audits complete with exclusions and support evidence | Audit owner | `PASS` | `reports/audits/hbppg_audit.md`; `reports/audits/bigideas_audit.md`; `data/manifests/bigideas_extraction_integrity.json` | None; both audits and the regenerated BIG artifacts passed independent review | Independent review completed on 2026-08-15 |
-| D-State — Scientific freeze | State label and participant-disjoint split approved and versioned | Project lead | `IN_PROGRESS` | `configs/state/label-v1.yaml`; `reports/probes/state_exploratory-v1/decision_record.md` | Label is frozen; registered participant split and model protocol remain unfrozen | Label-only freeze recorded; split/model approval required |
+| D-State — Scientific freeze | State label and participant-disjoint split approved and versioned | Project lead | `PARKED` | `configs/state/label-v1.yaml`; `reports/probes/state_exploratory-v1/decision_record.md` | The development-only probe did not support incremental PPG learnability on the current representation; no registered split or model protocol is recommended | Reopen only by a project-lead decision |
 | D-Trend — Scientific freeze | Trend protocol and chronological split approved and versioned | Project lead | `NOT_STARTED` | `configs/trend/label-v1.yaml`; `data/manifests/trend_split-v1.json` | Candidate protocol and split are not frozen | Project lead required |
 
 ## Stop rules
