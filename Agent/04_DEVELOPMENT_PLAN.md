@@ -2,11 +2,22 @@
 
 ## Objective
 
-Build a reproducible research codebase that can audit data, freeze labels/splits, preprocess signals, extract features, train baselines/models, detect leakage, run controls, evaluate calibration/SQI/OOD, perform native-derived robustness testing, and generate paper-ready artifacts.
+Build a reproducible research codebase that can:
 
-The codebase should make accidental test leakage difficult.
+- audit data;
+- freeze labels/splits;
+- preprocess signals;
+- extract features;
+- train baselines/models;
+- detect leakage;
+- run controls;
+- evaluate calibration/SQI/OOD;
+- run native-derived robustness tests;
+- generate paper-ready artifacts.
 
-## Recommended repository
+The codebase should make accidental leakage difficult.
+
+## Repository
 
 ```text
 glycoband/
@@ -28,10 +39,6 @@ glycoband/
 │   ├── processed/trend/
 │   └── manifests/
 ├── notebooks/
-│   ├── 01_hbppg_data_understanding.ipynb
-│   ├── 02_bigideas_data_understanding.ipynb
-│   ├── 03_state_baselines.ipynb
-│   └── 04_trend_baselines.ipynb
 ├── src/glycoband/
 │   ├── datasets/
 │   ├── adapters/
@@ -55,37 +62,56 @@ glycoband/
 
 ## Coding standards
 
-Prefer Python 3.11+, type hints, dataclasses/typed schemas, pathlib, pure transformation functions, config-driven experiments, pytest, structured logging, deterministic seeds, and Parquet for large derived data.
+Prefer:
 
-Avoid hardcoded paths, notebook-only core logic, hidden mutable globals, magic thresholds, manual preprocessing, test-set branching, and overwriting artifacts without versioning.
+- Python 3.11+;
+- type hints;
+- dataclasses/typed schemas;
+- `pathlib`;
+- pure transformation functions;
+- config-driven experiments;
+- pytest;
+- structured logging;
+- deterministic seeds;
+- Parquet for large derived data.
+
+Avoid:
+
+- hardcoded paths;
+- notebook-only core logic;
+- hidden mutable globals;
+- magic thresholds;
+- manual preprocessing;
+- test-set branching;
+- overwriting artifacts without versioning.
 
 ## Data loaders
 
-### Hb-PPG loader
+### Hb-PPG
 
 Responsibilities:
 
-- discover participant files,
-- load metadata,
-- load four waveform channels,
-- validate channel names/lengths,
+- discover participant files;
+- load metadata;
+- load four waveform channels;
+- validate channel names/lengths;
 - preserve participant ID.
 
-Suggested interface:
+Suggested:
 
 ```python
 load_hbppg_recording(participant_id) -> HbPPGRecord
 ```
 
-### BIG IDEAs loader
+### BIG IDEAs
 
 Responsibilities:
 
-- load one participant at a time,
-- parse BVP and Dexcom,
-- preserve timestamps,
-- expose chunk/iterator access,
-- avoid requiring the full dataset in RAM.
+- load one participant at a time;
+- parse BVP and CGM;
+- preserve timestamps;
+- expose chunk/iterator access;
+- avoid loading the full dataset into RAM.
 
 Suggested:
 
@@ -104,9 +130,9 @@ Adapters do not predict labels.
 
 ## Config-driven science
 
-Scientific choices must live in config files, not hidden constants.
+Scientific choices live in config files, not hidden constants.
 
-Example Trend config:
+Example Trend:
 
 ```yaml
 trend:
@@ -118,7 +144,7 @@ trend:
   gap_policy: TBD
 ```
 
-Example State config:
+Example State:
 
 ```yaml
 state:
@@ -129,9 +155,15 @@ state:
 
 ## Split manifests
 
-State: participant IDs assigned once to train/validation/test; automated disjointness assertions.
+State:
 
-Trend: temporal ranges assigned to train/validation/embargo/test; automated raw-history overlap checks.
+- participant IDs assigned once to train/validation/test;
+- automated disjointness assertions.
+
+Trend:
+
+- temporal ranges assigned to train/validation/embargo/test;
+- automated raw-history overlap checks.
 
 Do not regenerate splits casually between experiments.
 
@@ -139,17 +171,37 @@ Do not regenerate splits casually between experiments.
 
 Fit on training only:
 
-- scaler,
-- imputer,
-- selector,
-- PCA if ever used,
+- scaler;
+- imputer;
+- selector;
+- PCA if used;
 - OOD distribution.
 
-Validation may select hyperparameters/calibration. Final test uses frozen objects only.
+Validation may select hyperparameters/calibration.
+
+Final test uses frozen objects only.
 
 ## Experiment artifacts
 
-Each run should create:
+Use two levels.
+
+### Exploratory analysis
+
+Minimum reproducible record:
+
+```text
+question
+config/parameters
+data version
+code commit
+result
+```
+
+Do not force full model-bundle ceremony for simple audits or sanity checks.
+
+### Registered experiment
+
+Create:
 
 ```text
 reports/experiments/<experiment_id>/
@@ -161,44 +213,79 @@ reports/experiments/<experiment_id>/
 ├── per_participant.csv
 ├── predictions.parquet
 ├── confusion_matrix.png
-├── logs.txt
 └── model_bundle/
 ```
 
-Model bundle should contain model, feature list, preprocessing config, scaler/imputer/selector, calibrator, OOD model, label definition, dataset version, split IDs, seed, git commit, and metrics summary.
+Add detailed logs only when diagnostically useful.
+
+Model bundle should contain enough information to reproduce inference and interpretation:
+
+- model;
+- feature list;
+- preprocessing config;
+- scaler/imputer/selector;
+- calibrator/OOD object if used;
+- label definition;
+- dataset version;
+- split IDs;
+- seed;
+- git commit;
+- metrics summary.
 
 ## Mandatory tests
 
 - State: no participant leakage.
 - Trend: no material temporal overlap.
-- Trend labels: no future-CGM usage for recent-observed Trend.
+- Trend labels: no future-CGM usage.
 - Synthetic: original participant/label/source provenance preserved.
 - Resampling: rate/length/anti-alias behavior.
-- Decision Engine: valid, unavailable, poor SQI, OOD, low confidence, mixed timestamps.
+- Decision Engine: valid, unavailable, poor SQI, OOD, low confidence, timestamp handling.
+
+Run only tests whose assumptions are affected unless a full-suite run is explicitly needed.
 
 ## Compute strategy
 
-Core stack: NumPy, SciPy, pandas/Polars, PyArrow, scikit-learn, XGBoost, matplotlib. PyTorch only for justified later sequence models.
+Core stack:
+
+```text
+NumPy
+SciPy
+pandas/Polars
+PyArrow
+scikit-learn
+XGBoost
+matplotlib
+```
+
+Use PyTorch only for justified later sequence models.
 
 BIG IDEAs workflow:
 
 ```text
-participant -> chunk -> preprocess -> window -> features -> Parquet -> release memory
+participant
+-> chunk
+-> preprocess
+-> window
+-> features
+-> Parquet
+-> release memory
 ```
 
-## Milestones
+## Experiment completion
 
-1. Source verification + manifests.
-2. Hb-PPG and BIG IDEAs Data Understanding Reports.
-3. Human-reviewed target + split freeze.
-4. Baselines.
-5. Classical models + ablations.
-6. Leakage/negative controls + calibration/SQI/OOD.
-7. Frozen held-out evaluation.
-8. Synthetic robustness.
-9. Candidate engineering envelope.
-10. Optional Model 2B / small sequence models / integration demo.
+A registered experiment is complete when it has:
 
-## Definition of done
+- immutable config;
+- explicit data version;
+- split manifest;
+- baseline comparison;
+- applicable leakage checks;
+- applicable negative control;
+- required per-class/per-participant metrics;
+- saved predictions;
+- reproducible artifacts;
+- interpretation;
+- claim ceiling;
+- limitations.
 
-An experiment is done only when it has immutable config, explicit data version, split manifest, baseline comparison, leakage checks, negative control where applicable, per-class/per-participant metrics, saved predictions, reproducible artifacts, interpretation, claim ceiling, and limitations.
+Do not turn this checklist into a requirement for unrelated small tasks.

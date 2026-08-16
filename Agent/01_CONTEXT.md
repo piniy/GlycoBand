@@ -8,11 +8,13 @@ Main question:
 
 > What glucose-related information, if any, can be recovered from PPG under the domains represented by available public datasets?
 
-This is not currently a clinically validated wearable, glucometer, CGM replacement, diabetes diagnostic system, or treatment-decision system.
+This project is not currently a clinically validated wearable, glucometer, CGM replacement, diabetes diagnostic system, or treatment-decision system.
 
 ## Scientific principle
 
-PPG does not directly measure glucose molecules. The project tests whether physiological/hemodynamic patterns in PPG/BVP contain predictive information associated with glycemic condition.
+PPG does not directly measure glucose molecules.
+
+The project tests whether physiological/hemodynamic information in PPG/BVP contains reproducible predictive information associated with glycemic condition.
 
 Use:
 
@@ -20,7 +22,7 @@ Use:
 data -> evidence -> claim -> future engineering concept
 ```
 
-Never force data to support a predetermined wearable narrative.
+Do not force data to support a predetermined wearable narrative.
 
 ## Model 1 — Fasting State Expert
 
@@ -31,14 +33,14 @@ Never force data to support a predetermined wearable narrative.
 - Task: cross-person fasting glycemic-state classification.
 - Primary validation: participant-aware / unseen participants.
 
-Mental model: **Anchor** — where is standardized fasting glycemic state?
+Mental model: **Anchor** — what is the standardized fasting glycemic state?
 
 ## Model 2 — Free-Living Dynamic Expert
 
-- Dataset: BIG IDEAs.
+- Dataset: BIG IDEAs v1.1.3.
 - Domain: Empatica E4 wrist BVP/PPG.
-- Available optical input: one native BVP stream, ~64 Hz.
-- Reference: Dexcom G6 interstitial CGM, ~5-minute spacing.
+- Optical input: one native BVP stream, ~64 Hz.
+- Reference: Dexcom G6 interstitial CGM.
 - Primary task: Recent Trend.
 - Conceptual classes: `FALLING / STABLE / RISING`.
 - Primary validation: within-person chronological with temporal separation.
@@ -49,7 +51,7 @@ Mental model: **Compass** — which direction has glucose moved recently?
 
 Possible personalized free-living state-like output such as `PersLow / PersNorm / PersHigh`.
 
-It is secondary and is **not the same target** as Model 1 fasting State.
+It is secondary and is not the same target as Model 1 fasting State.
 
 ## Dataset separation
 
@@ -63,27 +65,27 @@ Therefore:
 
 ## PhysioCGM status
 
-PhysioCGM is out of current core training/validation/synthetic-testing scope. It may be used only as literature or methodological context unless explicitly reopened.
+PhysioCGM is outside current core training, validation, and synthetic-testing scope unless explicitly reopened.
 
-## State-category clarification
+It may be used as literature or methodological context.
 
-Clinical/conceptual State categories may be specified before final testing if their boundaries come from a defensible clinical/research definition. Example vocabulary could be `LOW / NORMAL / ELEVATED`.
+## State-category rule
 
-However, a **pre-model raw-data audit** must establish whether each category has enough participant support to be evaluated reliably.
+Clinical/conceptual State categories may be defined before final testing if boundaries are defensible.
 
-A clinically valid rare category can still be statistically unevaluable for ML.
+However, the raw-data audit must establish whether each category has enough participant support to be evaluated reliably.
 
-Correct sequence:
+A clinically valid rare category can still be statistically unevaluable.
+
+Correct:
 
 ```text
 raw-data audit
 -> candidate clinically meaningful categories
--> class-support review
--> freeze research label definition
+-> support review
+-> freeze label definition
 -> train / validation
 -> final held-out test
--> performance audit
--> decide operational output policy
 ```
 
 Forbidden:
@@ -92,24 +94,26 @@ Forbidden:
 final test looks bad -> move cutoff -> retest
 ```
 
-Performance audit may change the **operational output** (for example, `NORMAL / ELEVATED / UNCERTAIN`) without redefining ground truth after the fact.
+Operational output policy may change after evaluation without redefining ground truth.
 
-## Trend-category clarification
+## Trend-category rule
 
-The conceptual vocabulary `FALLING / STABLE / RISING` may be fixed from the start. But the exact label-generation protocol still requires pre-final-test selection of:
+The vocabulary `FALLING / STABLE / RISING` may be fixed conceptually.
 
-- history window H,
-- slope estimator,
-- smoothing,
-- threshold tau,
-- minimum CGM support,
+The exact label-generation protocol must be frozen before final testing:
+
+- history window H;
+- slope estimator;
+- smoothing;
+- threshold tau;
+- minimum CGM support;
 - alignment/gap policy.
 
-These are frozen using audit + train/validation only.
+Use audit + train/validation only.
 
 ## CGM role in Trend
 
-Research label generation:
+Ground-truth generation:
 
 ```text
 CGM history ending at t -> true Trend label
@@ -121,7 +125,7 @@ Inference:
 BVP history ending at t -> predicted Trend
 ```
 
-CGM is not a core inference feature. A historical glucose-state prediction model is not required as an intermediate dependency for Trend.
+CGM is not a core inference feature.
 
 ## Core predictor policy
 
@@ -129,13 +133,15 @@ CGM is not a core inference feature. A historical glucose-state prediction model
 
 Core predictor: PPG-derived information only.
 
-Age/sex/BMI may be used only as explicitly declared context-only comparators or ablations. Do not silently use laboratory glucose, Hb, SBP, or DBP as predictor inputs.
+Age/sex/BMI may be used only as explicitly declared comparators or ablations.
+
+Do not silently use laboratory glucose, Hb, SBP, or DBP as predictor inputs.
 
 ### Model 2
 
 Core predictor: BVP/PPG temporal history only.
 
-Other BIG IDEAs modalities may support SQI/artifact/confounding analysis or explicitly declared multimodal comparisons, but must not silently enter the core model.
+Other BIG IDEAs modalities may support SQI, artifact/confounding analysis, or explicitly declared multimodal comparisons, but must not silently enter the core model.
 
 ## Claim boundaries
 
@@ -168,8 +174,12 @@ Recent trend: FALLING (14:05)
 
 Never infer `ELEVATED + FALLING = NORMAL` or a new mg/dL value.
 
-Decision Engine handles protocol validity, SQI, OOD, confidence, timestamps, `UNAVAILABLE`, `NO_ESTIMATE`, and `UNCERTAIN`.
+It may handle protocol validity, SQI, OOD, confidence, timestamps, `UNAVAILABLE`, `NO_ESTIMATE`, and `UNCERTAIN`.
 
 ## Research philosophy
 
-A negative result is valid. High performance is not credible until leakage and negative controls are checked. The project goal is scientific resolution, not maximizing a competition metric.
+A negative result is valid.
+
+High performance is suspicious until leakage and negative controls are checked.
+
+The goal is scientific resolution, not maximizing a competition metric.

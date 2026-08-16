@@ -2,9 +2,11 @@
 
 ## Purpose
 
-This file records source-level dataset facts, versions, data contracts, allowed/forbidden use, audit requirements, and label provenance.
+This file records stable source-level dataset facts, versions, data contracts, allowed/forbidden use, audit requirements, and provenance rules.
 
-It is not a substitute for raw-data audit results. Anything marked `TBD_AUDIT` must be calculated from downloaded files.
+It is not a live project-status dashboard.
+
+Anything marked `TBD_AUDIT` must be calculated from downloaded files.
 
 ## Dataset A — Hb-PPG
 
@@ -14,13 +16,15 @@ Primary dataset for Model 1 — Fasting State Expert.
 
 ### Source
 
-Paper: **A Four-Wavelength Photoplethysmography dataset for non-invasive hemoglobin assessment**, Scientific Data, 2026.  
+Paper: **A Four-Wavelength Photoplethysmography dataset for non-invasive hemoglobin assessment**, Scientific Data, 2026.
+
 DOI: `10.1038/s41597-026-06945-6`
 
-Dataset: Figshare v6.  
+Dataset: Figshare v6.
+
 DOI: `10.6084/m9.figshare.22256143.v6`
 
-### Verified source-level facts
+### Source-level facts
 
 - 252 retained adult participants.
 - Approximate age range 21–90 years.
@@ -28,9 +32,9 @@ DOI: `10.6084/m9.figshare.22256143.v6`
 - Four wavelengths: 660, 730, 850, 940 nm.
 - Per-participant PPG files.
 - Metadata includes age, gender, height, weight, Hb, blood glucose, SBP, DBP, signal length.
-- Signal durations include roughly 45–60 s.
+- Signal duration roughly 45–60 s.
 - Fasting blood glucose information is recorded.
-- The source paper is primarily a data descriptor; it does not itself establish GlycoBand's fasting-glucose model performance.
+- The source paper is a data descriptor; it does not establish GlycoBand model performance.
 
 ### Native contract
 
@@ -50,37 +54,40 @@ Reference: fasting venous blood glucose.
 
 Core predictor: PPG-derived information.
 
-Optional declared context comparator: age, sex/gender, BMI if legitimately derived from real height/weight.
+Optional declared context comparator: age, sex/gender, BMI derived from real height/weight.
 
-Do not silently use glucose reference, Hb, SBP, or DBP as core predictors.
+Do not use glucose reference, Hb, SBP, or DBP as core predictors.
 
-### Required audit (`TBD_AUDIT`)
+### Required audit
 
-- exact glucose distribution/quantiles,
-- candidate class counts,
-- participant support per class,
-- missingness,
-- actual rate/length consistency,
-- corrupt files,
-- flatline/clipping,
-- usability per wavelength,
-- pulse quality/SQI,
+- exact glucose distribution/quantiles;
+- candidate class counts;
+- participant support per class;
+- missingness;
+- rate/length consistency;
+- corrupt files;
+- flatline/clipping;
+- usability per wavelength;
+- pulse quality/SQI;
 - representative signals.
 
 ## Dataset B — BIG IDEAs
 
 ### Role
 
-Primary dataset for Model 2 — Recent Trend. Optional secondary dataset for Model 2B.
+Primary dataset for Model 2 — Recent Trend.
+
+Optional secondary dataset for Model 2B.
 
 ### Current version
 
-PhysioNet **v1.1.3**, published 13 Apr 2026.  
+PhysioNet **v1.1.3**, published 13 Apr 2026.
+
 DOI: `10.13026/aw6y-fc44`
 
 Use the same exact version in manifests, reports, and citations unless explicitly changed.
 
-### Verified source-level facts
+### Source-level facts
 
 - 16 participants.
 - Inclusion age approximately 35–65.
@@ -88,15 +95,17 @@ Use the same exact version in manifests, reports, and citations unless explicitl
 - Monitoring approximately 8–10 days.
 - Empatica E4 wrist wearable.
 - Dexcom G6 CGM.
-- CGM measures interstitial glucose about every 5 min.
-- BVP/PPG sampled ~64 Hz.
+- CGM roughly every 5 min.
+- BVP/PPG ~64 Hz.
 - Additional modalities include ACC, EDA, temperature, HR, IBI, food logs, demographics.
 - Total uncompressed size about 34.1 GB.
-- Individual BVP files can be around ~1 GB or more.
+- Individual BVP files may be around ~1 GB or more.
 
 ### Critical sensor rule
 
-Treat `BVP.csv` as one native BVP signal. It is not wavelength-resolved raw optical data.
+Treat `BVP.csv` as **one native BVP signal**.
+
+It is not wavelength-resolved raw optical data.
 
 Forbidden:
 
@@ -126,9 +135,9 @@ Core inference:
 BVP history -> predicted Trend
 ```
 
-CGM is used for ground-truth generation/evaluation, not as a core inference feature.
+CGM is ground truth only, not a core inference feature.
 
-### Required audit (`TBD_AUDIT`)
+### Required audit
 
 Per participant:
 
@@ -147,7 +156,7 @@ glucose_stats
 trend_label_counts_by_candidate_protocol
 ```
 
-Also compute support by both **windows** and **participants**.
+Compute support by both **windows** and **participants**.
 
 ## Separation matrix
 
@@ -165,23 +174,30 @@ Also compute support by both **windows** and **participants**.
 
 ## State-label contract
 
-Clinical/conceptual categories may be declared before modeling, provided boundaries are defensible. Example vocabulary may be `LOW / NORMAL / ELEVATED`.
+Clinical/conceptual categories may be declared before modeling if their boundaries are defensible.
 
-But the raw-data audit must determine whether each class has enough participant support to be evaluated as a primary ML class.
+Example vocabulary may be `LOW / NORMAL / ELEVATED`.
+
+But audit must determine whether each class has enough participant support to be evaluated as a primary ML class.
 
 Correct:
 
 ```text
-audit -> clinical candidate definitions -> support review -> freeze labels -> model -> final test
+audit
+-> clinical candidate definitions
+-> support review
+-> freeze labels
+-> model
+-> final test
 ```
 
 Incorrect:
 
 ```text
-final test -> change cutoff -> retest
+final test
+-> change cutoff
+-> retest
 ```
-
-After performance audit, the operational layer may suppress unreliable outputs without redefining ground truth.
 
 ## Trend-label contract
 
@@ -197,17 +213,21 @@ Candidate generator:
 CGM history ending at t -> slope -> thresholded direction
 ```
 
-Parameters to freeze before final test:
+Freeze before final test:
 
-- H,
-- slope method,
-- smoothing,
-- tau,
-- minimum valid CGM points,
-- alignment tolerance,
+- H;
+- slope method;
+- smoothing;
+- tau;
+- minimum valid CGM points;
+- alignment tolerance;
 - gap policy.
 
-Candidate H: 15 / 30 / 60 min.
+Candidate H:
+
+```text
+15 / 30 / 60 min
+```
 
 ## Manifest schema
 
@@ -265,32 +285,25 @@ feature_version
 split
 ```
 
-Never lose participant/temporal identity.
+Never lose participant or temporal identity.
 
 ## Storage policy
 
-`data/raw/` is immutable.  
-`data/interim/` holds aligned/cleaned native-derived data.  
-`data/processed/` holds model-ready data.  
-`data/manifests/` holds versions, checksums, splits, exclusions, provenance.
+```text
+data/raw/
+-> immutable source data
 
-For BIG IDEAs process participant-wise/chunk-wise and prefer Parquet for compact derived tables.
+data/interim/
+-> aligned/cleaned native-derived data
 
-## Current status
+data/processed/
+-> model-ready data
 
-| Item | Status |
-|---|---|
-| Hb-PPG source/schema | source-level verified |
-| Hb-PPG exact glucose/class audit | `TBD_AUDIT` |
-| Hb-PPG model performance | not established |
-| BIG IDEAs v1.1.3 source/version | verified |
-| BIG IDEAs source/schema | source-level verified |
-| BIG IDEAs exact BVP-CGM overlap | `TBD_AUDIT` |
-| BIG IDEAs Trend class distribution | `TBD_AUDIT` |
-| BIG IDEAs PPG-only Trend performance | not established |
-| Model 2B feasibility | secondary / not established |
-| synthetic robustness | not yet run |
-| physical wearable validity | not established |
+data/manifests/
+-> versions, checksums, splits, exclusions, provenance
+```
+
+For BIG IDEAs, process participant-wise/chunk-wise and prefer compact derived tables such as Parquet.
 
 ## External references
 
