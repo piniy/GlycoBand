@@ -32,6 +32,10 @@ claim ceiling
 
 If any required field is unresolved, the run is exploratory and cannot open the final test set.
 
+Exploratory development work may compare candidate labels, thresholds, history windows, smoothing,
+simple preprocessing, cheap baselines, and coarse feature families, provided final-test
+performance is not accessed. Such results remain decision support rather than registered evidence.
+
 ### Required validity controls
 
 - Hb-PPG State splits are participant-disjoint.
@@ -57,22 +61,54 @@ A result is reproducible when another clean checkout can use the recorded code, 
 
 ### Minimum experiment artifact set
 
-Store each completed run under `reports/experiments/<experiment_id>/` with:
+Store each completed run under reports/experiments/<experiment_id>/
+    config.yaml
+    environment.txt
+    dataset_manifest.json
+    split_manifest.json
 
-```text
-config.yaml
-environment.txt
-dataset_manifest.json
-split_manifest.json
-metrics.json
-per_participant.csv
-predictions.parquet
-summary.md
-model_bundle/          # when a fitted model is retained
-logs.txt               # warnings, errors, and major lifecycle events only
+    metrics.json
+    per_participant.csv
+    predictions.parquet
+
+    figures/
+        # diagnostic figures that materially aid interpretation
+
+    summary.md
+
+    model_bundle/          # when retained
+    logs.txt               # warnings/errors/lifecycle only
 ```
 
 `summary.md` must state the result, baseline comparison, negative-control result, leakage checks, limitations, claim ceiling, and whether the conclusion is `supported`, `partially supported`, `not supported`, or `insufficient evidence`.
+
+### Human-visible experiment loop
+
+Meaningful exploratory and confirmatory experiment runners should:
+
+1. print concise live terminal progress:
+   - experiment identity
+   - dataset / development / reserve counts
+   - major execution stages
+   - bounded progress for expensive repeated computation
+   - final headline metrics and artifact location
+
+2. save diagnostic visualizations when visual structure materially aids
+   scientific interpretation.
+
+3. save those figures under:
+   reports/experiments/<experiment_id>/figures/
+
+Terminal progress is an execution interface, not a research artifact.
+Do not persist full terminal dumps.
+
+Figures are evidence artifacts, not decoration. Prefer plots that expose
+distributions, uncertainty, failure modes, temporal structure, controls,
+or model comparisons that summary metrics hide.
+
+A meaningful experiment should leave enough visual evidence for later
+scientific review and paper preparation without requiring the experiment
+to be rerun merely to understand its result.
 
 ### Compact records, not journals
 
@@ -156,3 +192,5 @@ Failure of a gate means the result is exploratory, blocked, or insufficient evid
 - `Agent/04_DEVELOPMENT_PLAN.md` defines repository and artifact structure.
 - `Agent/05_EXPERIMENT_AGENT.md` defines experiment gates and required controls.
 - `AGENTS.md` defines repository-wide precedence and human review gates.
+
+→ figures are required when scientifically informative

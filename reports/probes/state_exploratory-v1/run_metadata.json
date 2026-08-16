@@ -1,0 +1,12 @@
+{
+  "dataset": "hbppg-v6",
+  "reserve_manifest": "data/manifests/state_test_reserve-v0.json",
+  "development_participants": 173,
+  "reserved_participants": 44,
+  "seed": 20260817,
+  "repeats": 20,
+  "permutations": 500,
+  "final_test_accessed": false,
+  "feature_selection": "none",
+  "preprocessing": "median imputation and StandardScaler inside each training-fold Pipeline"
+}

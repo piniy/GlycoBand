@@ -8,19 +8,23 @@ GlycoBand is a computational biomedical feasibility-research project for Healthy
 
 Read the project pack before changing scientific behavior:
 
-1. `Agent/00_INDEX.md`
+1. `Agent/AGENTS.md`
 2. `Agent/01_CONTEXT.md`
 3. `Agent/02_RESEARCH_PLAN.md`
 4. `Agent/03_BASE_DATA.md`
 5. `Agent/04_DEVELOPMENT_PLAN.md`
 6. `Agent/05_EXPERIMENT_AGENT.md`
 
-`Agent/GLYCOBAND_AGENT-1.md` is retained as legacy research context. When it conflicts with the current pack above, the current pack wins. In particular:
+The current pack above is authoritative. In particular:
 
 - Model 1 uses Hb-PPG for fasting glycemic-state research.
 - Model 2 uses BIG IDEAs v1.1.3 for free-living Recent Trend research.
 - PhysioCGM is outside the current core training, validation, and synthetic-testing scope.
 - Hb-PPG and BIG IDEAs must never be concatenated into one training population.
+
+Before requesting a scientific freeze, ask whether a cheap development-only exploratory probe
+could materially reduce uncertainty. If yes, prefer that probe. Exploratory probes may not access
+final-test performance and may not automatically freeze scientific decisions.
 
 ## Non-negotiable scientific boundaries
 

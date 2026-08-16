@@ -1,101 +1,61 @@
 # GlycoBand Scientific Decision Register
 
-## Rules
+## Purpose
 
-Every entry requires evidence, a reviewer, and a version before its status becomes `APPROVED`. Reversals create a new version and name the superseded decision. Final-test performance cannot justify changing an earlier scientific decision.
+Track only scientific decisions that can materially change experiment validity or claim interpretation.
 
-## SCI-STATE-LABEL-001
+This file is descriptive, not a task queue. `PENDING` does not authorize the agent to complete a
+decision automatically.
 
-- **Version:** 0
-- **Approval status:** `NOT_STARTED`
-- **Approval date:** Not applicable before approval.
-- **Decision:** No State formulation has been selected.
-- **Evidence considered:** Hb-PPG v6 raw-data audit completed and independently accepted; no label review has opened.
-- **Required evidence:** Project-lead review of the audited glucose distribution, candidate clinical definitions, participant support per class, and claim consequences.
-- **Alternatives rejected:** None; decision review has not opened.
-- **Reviewer:** Project lead.
-- **Supersedes:** None.
-- **Superseded by:** None.
-- **Blocks:** State split freeze and State modeling.
+## Decisions
 
-## SCI-TREND-LABEL-001
+| ID | Decision | Status | Current value | Evidence required | Blocks |
+|---|---|---|---|---|---|
+| SCI-STATE-LABEL | State label formulation | `FROZEN` | `state-label-v1`: binary 5.6 mmol/L boundary | `configs/state/label-v1.yaml`; audit support; exploratory decision record | Registered State modeling; confirmatory/final State evaluation |
+| SCI-TREND-LABEL | Trend label protocol | `PENDING` | — | BIG IDEAs candidate H/tau/slope/smoothing/alignment/gap support | Registered Trend modeling; confirmatory/final Trend evaluation |
+| SCI-STATE-SPLIT | State participant split | `PENDING` | — | Approved State label + participant-level class support | Confirmatory/final State evaluation |
+| SCI-TREND-SPLIT | Trend chronological split | `PENDING` | — | Approved Trend label + embargo >= H + no history overlap | Confirmatory/final Trend evaluation |
+| SCI-FINAL-TEST | Final-test access | `SEALED` | — | Frozen label, split, preprocessing, features, model, hyperparameters, calibration/OOD, success criteria | Final evaluation |
+| CLAIM-CEILING | Maximum defensible claim | `FEASIBILITY_ONLY` | Feasibility research only | Native held-out evidence + leakage/negative controls + uncertainty + domain limits | Stronger claims |
 
-- **Version:** 0
-- **Approval status:** `NOT_STARTED`
-- **Approval date:** Not applicable before approval.
-- **Decision:** No Trend history, slope, threshold, smoothing, support, alignment, gap, or stride policy has been selected.
-- **Evidence considered:** BIG IDEAs v1.1.3 integrity, coverage, anomaly, and 81-protocol sensitivity audit completed and independently accepted; no Trend protocol review has opened.
-- **Required evidence:** Project-lead review of candidate history, threshold, smoothing, slope, alignment, gap, and chronological split policies before any version is approved.
-- **Alternatives rejected:** None; decision review has not opened.
-- **Reviewer:** Project lead.
-- **Supersedes:** None.
-- **Superseded by:** None.
-- **Blocks:** Trend label freeze and Trend modeling.
+## Frozen decision record
 
-## SCI-STATE-SPLIT-001
+```text
+ID: SCI-STATE-LABEL
+Version: state-label-v1
+Value: Candidate A, NORMAL_RANGE < 5.6 mmol/L; ELEVATED_FASTING_RANGE >= 5.6 mmol/L
+Evidence: Hb-PPG audit support (171/46 full eligible participants) plus state_exploratory-v1
+Date: 2026-08-17
+```
 
-- **Version:** 0
-- **Approval status:** `NOT_STARTED`
-- **Approval date:** Not applicable before approval.
-- **Decision:** No participant split has been frozen.
-- **Evidence considered:** None; the State label decision and participant-support audit are incomplete.
-- **Required evidence:** Approved State label definition and participant-level class support.
-- **Alternatives rejected:** None; decision review has not opened.
-- **Reviewer:** Project lead.
-- **Supersedes:** None.
-- **Superseded by:** None.
-- **Invariant:** A participant appears in exactly one of train, validation, or test.
+This freezes label meaning only. It does not freeze the State model protocol, registered split, or
+claim that PPG can infer State. Current scientific status: `incremental PPG learnability not
+supported on current representation`.
 
-## SCI-TREND-SPLIT-001
+## Exploratory status
 
-- **Version:** 0
-- **Approval status:** `NOT_STARTED`
-- **Approval date:** Not applicable before approval.
-- **Decision:** No chronological split has been frozen.
-- **Evidence considered:** Per-participant coverage, gap, anomaly, and candidate-history support are audited; no split policy has been approved.
-- **Required evidence:** Approved Trend label definition plus a chronological split proposal whose embargo is at least the selected history.
-- **Alternatives rejected:** None; decision review has not opened.
-- **Reviewer:** Project lead.
-- **Supersedes:** None.
-- **Superseded by:** None.
-- **Invariant:** No raw history overlaps a split boundary; embargo is at least the selected history.
+While a decision is `PENDING`, bounded development-only exploratory probes are permitted when they
+preserve the sealed final test. They do not constitute registered evidence and cannot automatically
+freeze the decision.
 
-## SCI-FINAL-TEST-001
+The `Blocks` column refers to registered or confirmatory/final evidence; it does not block a safe
+development-only probe.
 
-- **Version:** 0
-- **Approval status:** `NOT_STARTED`
-- **Approval date:** Not applicable before approval.
-- **Decision:** Final-test access is not authorized.
-- **Evidence considered:** Current project status and unresolved label, split, preprocessing, and model decisions.
-- **Required evidence:** Frozen task config, label version, split version, preprocessing, features, model family, hyperparameters, calibration, OOD policy, and success criteria.
-- **Alternatives rejected:** Opening the final test during development is rejected because it invalidates the held-out evaluation.
-- **Reviewer:** Project lead.
-- **Supersedes:** None.
-- **Superseded by:** None.
-- **Blocks:** Any final-test evaluation.
+## Invariants
 
-## ARCH-PIPELINE-001
+### State split
 
-- **Version:** 0
-- **Approval status:** `NOT_STARTED`
-- **Approval date:** Not applicable before approval.
-- **Decision:** No implementation architecture has been approved beyond the repository scaffold.
-- **Evidence considered:** Both raw datasets, schema, signal rates, file integrity, timestamp anomalies, alignment, and candidate support have been measured; task contracts remain unfrozen.
-- **Required evidence:** Project-lead-approved State and Trend labels/splits, followed by a bounded architecture and experiment-readiness review.
-- **Alternatives rejected:** Premature microservices, orchestration platforms, and deep-learning infrastructure are rejected without measured need.
-- **Reviewer:** Project lead.
-- **Supersedes:** None.
-- **Superseded by:** None.
+A participant may appear in only one of train, validation, or test.
 
-## CLAIM-CEILING-001
+### Trend split
 
-- **Version:** 0
-- **Approval status:** `NOT_STARTED`
-- **Approval date:** Not applicable before approval.
-- **Decision:** Current claims remain limited to feasibility questions; no predictive result has been established.
-- **Evidence considered:** Source-level dataset facts and the absence of project audit or experiment results.
-- **Required evidence:** Native held-out evaluation, leakage controls, negative controls, support, uncertainty, and domain limitations.
-- **Alternatives rejected:** Device validation, glucose measurement, diagnosis, and general-population claims are rejected at the current evidence level.
-- **Reviewer:** Project lead.
-- **Supersedes:** None.
-- **Superseded by:** None.
+No raw history may cross a split boundary. Embargo must be at least the selected history window.
+
+### Final test
+
+Final-test results must not be used to select labels, thresholds, preprocessing, features, models,
+calibration, OOD policy, or claim wording.
+
+## Approval rule
+
+Only the project lead may change a scientific decision from `PENDING` to `FROZEN`.

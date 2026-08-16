@@ -1,0 +1,41 @@
+schema_version: 1
+decision_id: SCI-STATE-LABEL
+version: state-label-v1
+status: FROZEN_LABEL_ONLY
+dataset:
+  name: hbppg
+  version: v6
+task:
+  name: fasting_state
+  type: classification
+reference:
+  source: fasting venous blood glucose
+  unit: mmol/L
+label:
+  name: Candidate A binary fasting range
+  source: ADA candidate boundary documented in the Hb-PPG audit
+  threshold_mmol_l: 5.6
+  categories:
+    - name: NORMAL_RANGE
+      lower_mmol_l: null
+      upper_mmol_l: 5.6
+      upper_bound: exclusive
+    - name: ELEVATED_FASTING_RANGE
+      lower_mmol_l: 5.6
+      upper_mmol_l: null
+      lower_bound: inclusive
+  interpretation: Research fasting-range category; not a diabetes diagnosis.
+  support_full_audit:
+    eligible_participants: 217
+    NORMAL_RANGE: 171
+    ELEVATED_FASTING_RANGE: 46
+inference:
+  core_predictor: ppg_only
+  wavelengths_nm: [660, 730, 850, 940]
+  context_comparator: [age, sex, BMI]
+  forbidden_core_predictors: [glucose_reference, hemoglobin, SBP, DBP]
+scientific_status:
+  incremental_ppg_learnability: NOT_SUPPORTED_ON_CURRENT_REPRESENTATION
+  model_protocol: NOT_FROZEN
+  registered_split: NOT_FROZEN
+  final_test: SEALED

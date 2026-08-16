@@ -2,21 +2,21 @@
 
 ## Prime directive
 
-Do the minimum work required to produce the next decision-relevant result.
+Do the minimum work required to produce the next **decision-relevant result**.
 
-Stop when the current user task is satisfied.
+Optimize for:
 
-Plans, phases, readiness documents, TODOs, and unfinished gates describe project state. They are **not authorization** to execute downstream work.
+```text
+important uncertainty removed
+-----------------------------
+time + compute + complexity
+```
 
-Do not maximize gate completion, documentation volume, repository cleanliness, or number of checks. Optimize for valid research progress.
+Do not optimize for gate completion, documentation volume, repository cleanliness, or number of checks.
 
-## Prompt authority and epistemic intake
+Plans, readiness pages, TODOs, and decision registers describe project state. They are not autonomous work queues.
 
-Do not treat scientific assertions in the user's prompt as established facts.
-
-If a user statement is uncertain, speculative, causal, or conflicts with project evidence, treat it as a **hypothesis or proposal** until verified.
-
-Default authority:
+## Prompt authority
 
 ```text
 ASK / EXPLAIN / EVALUATE / OPINION
@@ -38,26 +38,84 @@ APPROVE / FREEZE
 -> may change a scientific contract, subject to human-review rules
 ```
 
-Ambiguous verbs such as `prepare`, `initialize`, `review`, `set up`, and `make ready` default to the **minimum sufficient interpretation**, not completion of all downstream dependencies.
+Ambiguous verbs such as `prepare`, `initialize`, `review`, `set up`, and `make ready` default to the minimum sufficient interpretation.
 
-## Fast path vs research path
+## Three evidence levels
 
-### Fast path
+### Level 0 — Audit / descriptive analysis
 
-Use for bounded, low-risk work that does not change scientific contracts or depend on unresolved high-impact assumptions.
+Use to inspect distributions, support, missingness, gaps, SQI, candidate labels, and feasibility constraints.
+
+No model score is required.
+
+### Level 1 — Exploratory probe
+
+Use when a scientific decision is still unresolved and a cheap development-only experiment can materially reduce uncertainty.
+
+An exploratory probe:
+
+- uses development data only;
+- never accesses the sealed final test;
+- may compare candidate labels, H/tau values, smoothing, alignment, preprocessing, feature families, or simple baseline learnability;
+- should use the cheapest adequate method first, normally Dummy/majority and Logistic Regression;
+- may use participant-grouped or chronological development validation as appropriate;
+- is not final scientific evidence;
+- cannot select a clinical definition solely because it gives a better model score;
+- cannot automatically freeze a scientific decision;
+- must end with a finding, uncertainty remaining, and recommendation.
+
+### Level 2 — Registered experiment
+
+Use for evidence intended to support the scientific conclusion.
+
+Relevant labels, split contract, preprocessing/evaluation rules, and claim ceiling must already be frozen.
+
+The final test remains sealed until the full pipeline is frozen.
+
+## Mandatory uncertainty loop
+
+Before requesting a project-lead freeze, ask:
+
+> Is there a cheap, non-test exploratory probe that would materially improve this decision?
+
+Use:
 
 ```text
-local context
--> smallest correct action
--> targeted validation
--> stop
+uncertainty
+-> can existing evidence resolve it?
+   -> yes: recommend decision
+   -> no: can a cheap exploratory probe resolve it?
+      -> yes: run/recommend probe -> interpret -> recommend
+      -> no: escalate to project lead
+-> freeze if approved
+-> registered experiment
 ```
 
-Examples: documentation edits, deterministic transformations, isolated fixes, and tests for already-frozen invariants.
+Do not stop merely because a field is `PENDING` if a safe exploratory probe is the cheapest valid way to learn.
 
-### Research path
+## Final-test protection
 
-Escalate when the task affects:
+The final test must never influence:
+
+- target or label definition;
+- category thresholds;
+- Trend H/tau/smoothing/alignment/gap policy;
+- preprocessing;
+- features;
+- model family;
+- hyperparameters;
+- calibration;
+- OOD policy;
+- success criteria;
+- claim wording.
+
+If exploratory model learnability will influence a target/protocol decision, first establish a leakage-safe outer test reserve whose membership/time range is excluded from the probe.
+
+Once reserved, do not change or inspect that reserve to improve development results. Changing it requires explicit project-lead review and must be documented.
+
+## Research path
+
+Escalate reasoning when work affects:
 
 - target or label semantics;
 - split validity;
@@ -68,7 +126,7 @@ Escalate when the task affects:
 - Go/No-Go decisions;
 - unexpected model performance.
 
-Here, scientific validity dominates token efficiency.
+Scientific validity dominates token efficiency, but scientific rigor does not require unnecessary ceremony.
 
 ## Context routing
 
@@ -76,73 +134,33 @@ Read only what the task needs.
 
 ```text
 Agent/01_CONTEXT.md
--> stable scientific framing, architecture, and claim boundaries
+-> stable scientific framing, architecture, claim boundaries
 
 Agent/02_RESEARCH_PLAN.md
--> research questions, dependency sequence, evaluation, and Go/No-Go
+-> research questions, evidence sequence, evaluation, Go/No-Go
 
 Agent/03_BASE_DATA.md
--> dataset facts, versions, schemas, and label/data contracts
+-> dataset facts, versions, schemas, label/data contracts
 
 Agent/04_DEVELOPMENT_PLAN.md
--> repository, code, tests, artifacts, and reproducibility
+-> repository, code, tests, artifacts, reproducibility
 
 Agent/05_EXPERIMENT_AGENT.md
 -> experiment safeguards and scientific execution rules
 ```
 
-Read `RESEARCH_STANDARDS.md` only when the task directly affects experiments, reproducibility, scientific evidence, environment consistency, or retained research artifacts.
-
-Expand context only when evidence requires it.
-
-Prefer the current file + relevant config/test + git diff + existing evidence over rereading the repository.
-
-## Execution progress
-
-For computational or repository work, prefer **tool/terminal-visible progress** over long narrative progress messages.
-
-When a terminal or execution tool is available:
-
-1. perform the bounded operation;
-2. surface short stage/status updates through command/tool output when useful;
-3. show concrete results such as files changed, tests run, metrics, failures, or blockers;
-4. keep chat summaries compact.
-
-Example:
-
-```text
-[1/4] Inspecting relevant files...
-[2/4] Applying bounded change...
-[3/4] Running targeted tests...
-[4/4] Done: 3 tests passed, 2 files changed.
-```
-
-Do not print internal chain-of-thought or lengthy hidden reasoning. Show **actions, evidence, results, and decisions**.
-
-Do not create artificial progress logs for trivial tasks. A small task may simply execute and report completion.
+Expand context because evidence requires it, not because more files exist.
 
 ## Expensive-work rule
 
-Before full audits, full test suites, dataset hashing, broad research, model searches, or subagent fan-out, require at least one:
+Before full audits, full test suites, broad model searches, repository-wide scans, or subagent fan-out, require at least one:
 
 1. the user explicitly requested it;
-2. the current task cannot be completed correctly without it;
-3. prior evidence was invalidated by a dependency change;
+2. the task cannot be completed correctly without it;
+3. upstream evidence was invalidated;
 4. a credible anomaly threatens correctness or scientific validity.
 
-Otherwise reuse valid evidence, note the follow-up, and stop.
-
-A new Codex chat is not an evidence-invalidation event.
-
-## Delegation
-
-Use subagents only for clearly independent bounded work where parallelism or context isolation is worth the extra model/tool cost.
-
-Prefer delegation for read-heavy exploration, tests, triage, and independent checks.
-
-Keep scientific decisions, conflicting-evidence interpretation, target/split/claim changes, and final synthesis in the main thread.
-
-Avoid overlapping parallel writes.
+Otherwise use the smallest discriminating operation.
 
 ## Validation proportionality
 
@@ -150,38 +168,56 @@ Avoid overlapping parallel writes.
 docs-only
 -> consistency check
 
+exploratory probe
+-> leakage-safe dev split + minimal reproducibility + targeted sanity checks
+
 isolated implementation
 -> relevant unit tests
-
-local dependency change
--> targeted unit + integration tests
 
 preprocessing / labels / splits
 -> deeper pipeline and scientific checks
 
-final evaluation / scientific contract
+registered/final evaluation
 -> full applicable safeguards
 ```
 
-Do not automatically run the full test suite, Ruff, mypy, dataset audits, or integrity checks after every change.
+Do not automatically run every available check after every change.
 
-Run broader verification only when the affected surface or explicit task requires it.
+## Human review
+
+Human review is required to:
+
+- freeze or revise a scientific target/label contract;
+- freeze or deliberately replace the final split contract;
+- open the final test;
+- change claim ceiling;
+- make a major architecture/dataset-scope change.
+
+Human review is **not** required for every reversible development-only exploratory probe that obeys the rules above.
 
 ## Readiness and plans
 
-Readiness documents and plans are descriptive unless the current task explicitly authorizes execution.
-
 ```text
-NOT_STARTED != authorized work
-IN_PROGRESS  != continue automatically
+PENDING      != no learning allowed
+PENDING      == not frozen for registered/final evidence
+NOT_STARTED  != authorized work
 PASS         != rerun validation
 ```
 
-Do not chase `PASS` states.
-
-Gate status changes are side effects of authorized evidence-producing work, not objectives themselves.
+Do not chase gate status. Gates are summaries of evidence state, not the objective.
 
 ## End-of-task output
+
+For analysis/probes:
+
+```text
+Question:
+Probe or evidence used:
+Finding:
+What it does not prove:
+Confidence:
+Recommended next action:
+```
 
 For development:
 
@@ -192,14 +228,8 @@ Result:
 Remaining issue:
 ```
 
-For analysis:
+Stop when the next decision-relevant result has been produced.
 
-```text
-Finding:
-Evidence:
-Interpretation:
-Confidence:
-Recommended next action:
-```
-
-Do not regenerate project history unless explicitly requested.
+- Meaningful experiment runners must provide concise live terminal progress
+  and save interpretation-relevant diagnostic figures according to
+  `RESEARCH_STANDARDS.md`; do not replace these with additional planning prose.

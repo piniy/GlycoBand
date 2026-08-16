@@ -4,9 +4,14 @@
 
 Gate D locks the meaning of each answer and the rules for separating development data from final-test data. Once approved, model results may not be used to move these boundaries.
 
-## Recommended package
+## Current decision state
 
-### State: fasting range, not diagnosis
+The State label component is frozen as Candidate A only. The State registered split and model
+protocol are not frozen, Trend remains a leading hypothesis, and final-test performance remains
+unavailable. Bounded development-only probes may be used for any still-open decision while the
+reserve remains sealed.
+
+### State: fasting range, not diagnosis (label frozen; split/model not frozen)
 
 - Use only the 217 participants with a numeric fasting-glucose reference; exclude the 35 missing references.
 - Primary label: `NORMAL_RANGE` below 5.6 mmol/L and `ELEVATED_FASTING_RANGE` at or above 5.6 mmol/L, following the audited ADA candidate boundary.
@@ -41,4 +46,7 @@ Why: 30 minutes captures direction beyond a single instant, median smoothing lim
 2. `REVISE` — name the boundary or policy to change before anything is frozen.
 3. `NO_GO` — stop one or both predictive tasks while retaining the audit artifacts.
 
-Approval is intentionally human. Until one choice is recorded, Gate D remains `NOT_STARTED` and no model or architecture experiment may begin.
+Approval is intentionally human for the remaining split and Trend decisions. State label meaning is
+already recorded as `SCI-STATE-LABEL = FROZEN`; registered State modeling and final evaluation may
+not begin until the State split and model protocol are separately approved. A safe development-only
+probe may proceed under the project rules above.

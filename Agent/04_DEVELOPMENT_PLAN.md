@@ -2,20 +2,9 @@
 
 ## Objective
 
-Build a reproducible research codebase that can:
+Build a reproducible research codebase that can audit data, run cheap exploratory probes, freeze labels/splits, train registered models, detect leakage, run controls, and generate defensible research artifacts.
 
-- audit data;
-- freeze labels/splits;
-- preprocess signals;
-- extract features;
-- train baselines/models;
-- detect leakage;
-- run controls;
-- evaluate calibration/SQI/OOD;
-- run native-derived robustness tests;
-- generate paper-ready artifacts.
-
-The codebase should make accidental leakage difficult.
+The codebase should make accidental final-test leakage difficult without turning every exploratory question into a large implementation ceremony.
 
 ## Repository
 
@@ -23,37 +12,20 @@ The codebase should make accidental leakage difficult.
 glycoband/
 ├── README.md
 ├── AGENTS.md
-├── pyproject.toml
-├── requirements.lock
-├── docs/
+├── Agent/
 ├── configs/
-│   ├── state/
-│   ├── trend/
-│   ├── excursion/
-│   └── synthetic/
 ├── data/
-│   ├── raw/hbppg/
-│   ├── raw/bigideas/
+│   ├── raw/
 │   ├── interim/
-│   ├── processed/state/
-│   ├── processed/trend/
+│   ├── processed/
 │   └── manifests/
 ├── notebooks/
 ├── src/glycoband/
-│   ├── datasets/
-│   ├── adapters/
-│   ├── preprocessing/
-│   ├── labels/
-│   ├── features/
-│   ├── models/
-│   ├── evaluation/
-│   ├── synthetic/
-│   ├── decision/
-│   └── utils/
 ├── scripts/
 ├── tests/
 └── reports/
     ├── audits/
+    ├── probes/
     ├── experiments/
     ├── figures/
     ├── tables/
@@ -66,110 +38,89 @@ Prefer:
 
 - Python 3.11+;
 - type hints;
-- dataclasses/typed schemas;
-- `pathlib`;
 - pure transformation functions;
 - config-driven experiments;
-- pytest;
-- structured logging;
 - deterministic seeds;
+- pytest;
 - Parquet for large derived data.
 
 Avoid:
 
 - hardcoded paths;
-- notebook-only core logic;
 - hidden mutable globals;
-- magic thresholds;
-- manual preprocessing;
 - test-set branching;
-- overwriting artifacts without versioning.
+- reference glucose in inference features;
+- random participant/time leakage;
+- unnecessary framework or orchestration complexity.
 
-## Data loaders
-
-### Hb-PPG
-
-Responsibilities:
-
-- discover participant files;
-- load metadata;
-- load four waveform channels;
-- validate channel names/lengths;
-- preserve participant ID.
-
-Suggested:
-
-```python
-load_hbppg_recording(participant_id) -> HbPPGRecord
-```
-
-### BIG IDEAs
-
-Responsibilities:
-
-- load one participant at a time;
-- parse BVP and CGM;
-- preserve timestamps;
-- expose chunk/iterator access;
-- avoid loading the full dataset into RAM.
-
-Suggested:
-
-```python
-iter_bigideas_bvp(participant_id, chunk_size=...)
-load_bigideas_cgm(participant_id)
-```
-
-## Adapters
-
-`StateAdapter` accepts only compatible four-wave input and validates wavelength identity/order/rate/duration/missingness.
-
-`DynamicAdapter` accepts BVP-compatible temporal input and validates timestamps/order/rate/history/gaps.
-
-Adapters do not predict labels.
-
-## Config-driven science
-
-Scientific choices live in config files, not hidden constants.
-
-Example Trend:
-
-```yaml
-trend:
-  history_minutes: 30
-  slope_method: ols
-  smoothing: none
-  threshold: TBD
-  min_cgm_points: TBD
-  gap_policy: TBD
-```
-
-Example State:
-
-```yaml
-state:
-  formulation: TBD
-  clinical_reference: TBD
-  categories: TBD_AFTER_AUDIT_AND_REVIEW
-```
-
-## Split manifests
+## Split protection
 
 State:
 
-- participant IDs assigned once to train/validation/test;
-- automated disjointness assertions.
+- participant-disjoint outer test reserve;
+- participant-grouped development validation.
 
 Trend:
 
-- temporal ranges assigned to train/validation/embargo/test;
-- automated raw-history overlap checks.
+- chronological outer test reserve;
+- no raw-history overlap across boundaries;
+- embargo at least as large as the active history requirement when needed.
 
-Do not regenerate splits casually between experiments.
+Do not regenerate a reserve because a development result is weak.
+
+## Two computational artifact levels
+
+### Exploratory probe
+
+Purpose: answer one uncertainty cheaply.
+
+Minimum record:
+
+```text
+question
+candidate(s) compared
+data version
+reserve/split rule
+simple method
+seed if relevant
+result
+interpretation
+what it does not prove
+```
+
+Exploratory probes:
+
+- may run before target/protocol freeze;
+- use development data only;
+- normally use descriptive analysis, Dummy/majority, or Logistic Regression;
+- do not require full model bundles, calibration, OOD, or paper-ready reporting;
+- are stored under `reports/probes/` when worth retaining;
+- must never touch the sealed final test.
+
+### Registered experiment
+
+Purpose: produce evidence for the scientific conclusion.
+
+Requires relevant target/split contract frozen.
+
+Recommended artifact set:
+
+```text
+reports/experiments/<experiment_id>/
+├── config.yaml
+├── dataset_manifest.json
+├── split_manifest.json
+├── metrics.json
+├── per_participant.csv
+├── predictions.parquet
+└── model_bundle/
+```
+
+Add artifacts only when they improve reproducibility or interpretation.
 
 ## Training-only transformations
 
-Fit on training only:
+For registered experiments, fit on training only:
 
 - scaler;
 - imputer;
@@ -181,67 +132,18 @@ Validation may select hyperparameters/calibration.
 
 Final test uses frozen objects only.
 
-## Experiment artifacts
+Exploratory probes may use a simpler development-only preprocessing path, but it must still avoid leakage across the development validation boundary.
 
-Use two levels.
+## Mandatory tests by risk
 
-### Exploratory analysis
+Always preserve these invariants when relevant:
 
-Minimum reproducible record:
-
-```text
-question
-config/parameters
-data version
-code commit
-result
-```
-
-Do not force full model-bundle ceremony for simple audits or sanity checks.
-
-### Registered experiment
-
-Create:
-
-```text
-reports/experiments/<experiment_id>/
-├── config.yaml
-├── environment.txt
-├── dataset_manifest.json
-├── split_manifest.json
-├── metrics.json
-├── per_participant.csv
-├── predictions.parquet
-├── confusion_matrix.png
-└── model_bundle/
-```
-
-Add detailed logs only when diagnostically useful.
-
-Model bundle should contain enough information to reproduce inference and interpretation:
-
-- model;
-- feature list;
-- preprocessing config;
-- scaler/imputer/selector;
-- calibrator/OOD object if used;
-- label definition;
-- dataset version;
-- split IDs;
-- seed;
-- git commit;
-- metrics summary.
-
-## Mandatory tests
-
-- State: no participant leakage.
-- Trend: no material temporal overlap.
+- State: no participant leakage into outer test.
+- Trend: no temporal/raw-history overlap into outer test.
 - Trend labels: no future-CGM usage.
-- Synthetic: original participant/label/source provenance preserved.
-- Resampling: rate/length/anti-alias behavior.
-- Decision Engine: valid, unavailable, poor SQI, OOD, low confidence, timestamp handling.
+- Reference glucose/CGM: never core inference feature.
 
-Run only tests whose assumptions are affected unless a full-suite run is explicitly needed.
+Do not force the full registered-experiment checklist onto a cheap exploratory probe.
 
 ## Compute strategy
 
@@ -259,7 +161,7 @@ matplotlib
 
 Use PyTorch only for justified later sequence models.
 
-BIG IDEAs workflow:
+BIG IDEAs:
 
 ```text
 participant
@@ -271,21 +173,14 @@ participant
 -> release memory
 ```
 
-## Experiment completion
+## Implementation priority
 
-A registered experiment is complete when it has:
+When scientific uncertainty remains:
 
-- immutable config;
-- explicit data version;
-- split manifest;
-- baseline comparison;
-- applicable leakage checks;
-- applicable negative control;
-- required per-class/per-participant metrics;
-- saved predictions;
-- reproducible artifacts;
-- interpretation;
-- claim ceiling;
-- limitations.
+```text
+small script/notebook/probe
+-> answer the uncertainty
+-> only then build reusable production-style module if still needed
+```
 
-Do not turn this checklist into a requirement for unrelated small tasks.
+Do not build a large contract/module/test stack merely to discover that the underlying scientific formulation should be changed.

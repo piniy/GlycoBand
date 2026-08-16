@@ -2,9 +2,9 @@
 
 ## Operating note
 
-This document describes **research dependency order**, not an autonomous work queue.
+This document describes research logic, not an autonomous task queue.
 
-An unfinished phase does not authorize Codex to execute it unless the current user task explicitly requires that work or a necessary prerequisite.
+The goal is to remove important uncertainty as cheaply as possible without contaminating final evidence.
 
 ## Objective
 
@@ -27,8 +27,6 @@ Does recent free-living wrist BVP history contain predictive information for rec
 
 ### RQ3 — Optional Free-Living Excursion State
 
-Does wrist BVP contain predictive information about personalized current glycemic excursion state?
-
 Secondary only.
 
 ### RQ4 — Robustness
@@ -39,21 +37,48 @@ How does performance change under controlled degradation of real held-out native
 
 What candidate sensing requirements can be inferred without claiming validation of a physical GlycoBand device?
 
-## Research sequence
+## Evidence sequence
+
+Use:
 
 ```text
-verify relevant source/data contract
+verify source/data contract
 -> audit data
--> define and freeze target + split
--> baselines
+-> establish sealed outer test reserve when needed
+-> compare candidate scientific formulations on development data
+-> cheap exploratory probe if it can resolve material uncertainty
+-> human review + freeze target/split
+-> registered baselines
 -> classical models
 -> leakage/negative controls
--> frozen held-out evaluation
+-> freeze full pipeline
+-> open final test once
 -> synthetic robustness
 -> engineering inference
 ```
 
-Do not advance simply because the next phase exists.
+Do not require a freeze before **all** model use. Require a freeze before registered/final-evidence modeling.
+
+## Exploratory probe rule
+
+Run a probe only when:
+
+1. the decision is material;
+2. descriptive evidence is insufficient;
+3. a cheap development-only experiment can discriminate between plausible alternatives;
+4. the final test remains untouched.
+
+Default probe stack:
+
+```text
+Dummy / majority
+-> Logistic Regression
+-> stop unless more complexity is necessary to answer the decision
+```
+
+Exploratory results are decision support, not final evidence.
+
+A label/protocol may not be chosen solely because it maximizes validation score.
 
 ## Phase 1A — Hb-PPG audit
 
@@ -72,20 +97,33 @@ Required evidence:
 - representative signals;
 - initial SQI summary.
 
-### State target decision
+### State target study
 
-Possible outcomes:
+Possible candidate outcomes include:
 
 ```text
 3-class supported
 2-class more defensible
 rare class descriptive only
 classification not adequately supported
+continuous regression useful as exploratory comparison
 ```
 
-Freeze the research label definition before final evaluation.
+Evaluate candidate formulations using:
 
-Do not move thresholds because a model score is inconvenient.
+- clinical/research defensibility;
+- participant support;
+- sample support;
+- imbalance;
+- threshold sensitivity;
+- likely label noise;
+- optionally, cheap development-only learnability.
+
+If simple learnability evidence could materially change the decision, run a participant-grouped exploratory probe before requesting freeze.
+
+Then present the evidence and recommendation to the project lead.
+
+Do not move thresholds because a final-test score is inconvenient.
 
 ## Phase 1B — BIG IDEAs audit
 
@@ -114,7 +152,7 @@ Candidate ground truth:
 CGM history ending at t -> slope -> FALLING / STABLE / RISING
 ```
 
-Candidate history H:
+Candidate H:
 
 ```text
 15 / 30 / 60 min
@@ -122,7 +160,7 @@ Candidate history H:
 
 Candidate slope methods:
 
-- OLS primary;
+- OLS primary candidate;
 - endpoint delta sensitivity;
 - Theil-Sen sensitivity.
 
@@ -140,9 +178,22 @@ s < -tau      -> FALLING
 s > +tau      -> RISING
 ```
 
-Freeze H, tau, smoothing, alignment, gap policy, and minimum CGM support using audit + train/validation only.
+Study candidate H/tau/smoothing/alignment/gap policies using development-only data.
 
-## Model 1 — State
+Useful cheap evidence includes:
+
+- number of valid endpoints retained;
+- class balance;
+- participant support;
+- label stability under small parameter changes;
+- simple Logistic Regression learnability;
+- current-window-only vs history-H comparison when needed to select H.
+
+Freeze the selected protocol only after this study is informative enough.
+
+## Model 1 — State registered development
+
+Starts after State target and registered split are frozen.
 
 Pipeline:
 
@@ -150,7 +201,7 @@ Pipeline:
 raw 4-wave PPG
 -> integrity/SQI
 -> detrend/filter
--> normalization candidate
+-> normalization
 -> pulse/segment handling
 -> features
 -> classifier
@@ -166,21 +217,13 @@ Candidate feature families:
 
 ### Validation
 
-Primary: participant-aware unseen-participant evaluation.
+Primary: participant-aware unseen-participant development validation and sealed final test.
 
-Never allow one participant into both train and final test, even through separate windows.
+Never allow one participant into both development and final test.
 
 Primary metric: Macro-F1.
 
-Also report:
-
-- balanced accuracy;
-- per-class precision/recall/F1;
-- confusion matrix;
-- support;
-- participant-bootstrap CI when feasible.
-
-Required controls/comparisons:
+Required controls/comparisons for registered evidence:
 
 - majority/prior baseline;
 - Logistic Regression;
@@ -196,7 +239,9 @@ Model order:
 Dummy -> Logistic -> Random Forest -> XGBoost -> optional SVM -> optional deep
 ```
 
-## Model 2 — Recent Trend
+## Model 2 — Recent Trend registered development
+
+Starts after Trend label protocol and registered split are frozen.
 
 Pipeline:
 
@@ -211,27 +256,7 @@ raw wrist BVP
 -> Trend classifier
 ```
 
-Candidate short window: ~30 s.
-
-Temporal summaries may include:
-
-- mean/median/SD/IQR;
-- min/max;
-- first-last delta;
-- temporal slope;
-- early-vs-late difference;
-- valid-window fraction;
-- good-SQI fraction.
-
-Mandatory ablation:
-
-```text
-current-window-only vs history-H
-```
-
-### Validation
-
-Primary: within-person chronological.
+Primary validation: within-person chronological.
 
 ```text
 PAST: TRAIN -> VALIDATION -> EMBARGO/GAP -> TEST :FUTURE
@@ -240,49 +265,20 @@ PAST: TRAIN -> VALIDATION -> EMBARGO/GAP -> TEST :FUTURE
 Forbidden:
 
 - random shuffle of overlapping temporal windows;
-- raw train/test interval overlap.
+- raw train/test interval overlap;
+- future CGM in labels.
 
-Secondary exploratory stress test: LOSO.
-
-Because N=16, do not frame LOSO as broad population validation.
-
-Primary metric: Macro-F1.
-
-Also report:
-
-- balanced accuracy;
-- per-class F1;
-- confusion matrix;
-- participant-level results;
-- opposite-direction errors.
-
-Required baselines/controls:
+Required registered baselines/controls:
 
 - majority;
 - always-STABLE;
 - Logistic Regression;
-- large time-shift/circular-shift BVP relative to CGM.
-
-## Optional Model 2B
-
-Secondary only.
-
-Candidate labels may be generated cheaply during audit, but dedicated tuning waits until the primary Trend pipeline is stable.
+- large time-shift/circular-shift BVP relative to CGM;
+- current-window-only vs history-H ablation.
 
 ## SQI, calibration, OOD
 
 SQI is primarily a gate.
-
-Candidate indicators:
-
-- missingness;
-- flatline;
-- clipping;
-- implausible pulse rate;
-- low periodicity;
-- template mismatch;
-- poor SNR;
-- motion contamination.
 
 Calibration uses validation only if probabilities matter.
 
@@ -305,20 +301,7 @@ C. dummy synthetic fixtures
    -> software testing only
 ```
 
-State degradation preserves four real wavelength identities.
-
-Trend degradation starts from real native BIG IDEAs BVP.
-
-Candidates:
-
-- anti-aliased resampling;
-- noise/SNR;
-- dropout;
-- clipping;
-- drift;
-- attenuation;
-- jitter;
-- motion-like corruption.
+Synthetic robustness does not validate a physical device.
 
 ## Go / No-Go
 
@@ -344,6 +327,6 @@ Failure is a valid result.
 
 ## Final-test discipline
 
-Open final test only after labels, preprocessing, features, model family, hyperparameters, calibration, and OOD policies are frozen.
+Open final test only after labels, preprocessing, features, model family, hyperparameters, calibration, OOD policy, and success criteria are frozen.
 
-If design changes after test inspection, document that the test is no longer pristine.
+If design changes after test inspection, the test is no longer pristine and this must be documented.

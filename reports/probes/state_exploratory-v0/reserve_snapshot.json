@@ -1,0 +1,5 @@
+{
+  "reserve_manifest": "data/manifests/state_test_reserve-v0.json",
+  "development_count": 173,
+  "reserved_count": 44
+}

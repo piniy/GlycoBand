@@ -2,11 +2,9 @@
 
 ## Purpose
 
-This file records stable source-level dataset facts, versions, data contracts, allowed/forbidden use, audit requirements, and provenance rules.
+This file records source-level dataset facts, versions, data contracts, allowed/forbidden use, audit requirements, and label provenance.
 
-It is not a live project-status dashboard.
-
-Anything marked `TBD_AUDIT` must be calculated from downloaded files.
+It is not a substitute for raw-data audit results.
 
 ## Dataset A — Hb-PPG
 
@@ -17,14 +15,12 @@ Primary dataset for Model 1 — Fasting State Expert.
 ### Source
 
 Paper: **A Four-Wavelength Photoplethysmography dataset for non-invasive hemoglobin assessment**, Scientific Data, 2026.
-
 DOI: `10.1038/s41597-026-06945-6`
 
 Dataset: Figshare v6.
-
 DOI: `10.6084/m9.figshare.22256143.v6`
 
-### Source-level facts
+### Verified source-level facts
 
 - 252 retained adult participants.
 - Approximate age range 21–90 years.
@@ -32,9 +28,9 @@ DOI: `10.6084/m9.figshare.22256143.v6`
 - Four wavelengths: 660, 730, 850, 940 nm.
 - Per-participant PPG files.
 - Metadata includes age, gender, height, weight, Hb, blood glucose, SBP, DBP, signal length.
-- Signal duration roughly 45–60 s.
+- Signal durations roughly 45–60 s.
 - Fasting blood glucose information is recorded.
-- The source paper is a data descriptor; it does not establish GlycoBand model performance.
+- The source paper does not establish GlycoBand fasting-glucose model performance.
 
 ### Native contract
 
@@ -54,9 +50,9 @@ Reference: fasting venous blood glucose.
 
 Core predictor: PPG-derived information.
 
-Optional declared context comparator: age, sex/gender, BMI derived from real height/weight.
+Optional declared context comparator: age, sex/gender, BMI if legitimately derived from real height/weight.
 
-Do not use glucose reference, Hb, SBP, or DBP as core predictors.
+Do not silently use glucose reference, Hb, SBP, or DBP as core predictors.
 
 ### Required audit
 
@@ -75,19 +71,14 @@ Do not use glucose reference, Hb, SBP, or DBP as core predictors.
 
 ### Role
 
-Primary dataset for Model 2 — Recent Trend.
-
-Optional secondary dataset for Model 2B.
+Primary dataset for Model 2 — Recent Trend. Optional secondary dataset for Model 2B.
 
 ### Current version
 
 PhysioNet **v1.1.3**, published 13 Apr 2026.
-
 DOI: `10.13026/aw6y-fc44`
 
-Use the same exact version in manifests, reports, and citations unless explicitly changed.
-
-### Source-level facts
+### Verified source-level facts
 
 - 16 participants.
 - Inclusion age approximately 35–65.
@@ -95,17 +86,14 @@ Use the same exact version in manifests, reports, and citations unless explicitl
 - Monitoring approximately 8–10 days.
 - Empatica E4 wrist wearable.
 - Dexcom G6 CGM.
-- CGM roughly every 5 min.
+- CGM approximately every 5 min.
 - BVP/PPG ~64 Hz.
 - Additional modalities include ACC, EDA, temperature, HR, IBI, food logs, demographics.
 - Total uncompressed size about 34.1 GB.
-- Individual BVP files may be around ~1 GB or more.
 
 ### Critical sensor rule
 
-Treat `BVP.csv` as **one native BVP signal**.
-
-It is not wavelength-resolved raw optical data.
+Treat `BVP.csv` as one native BVP signal. It is not wavelength-resolved raw optical data.
 
 Forbidden:
 
@@ -135,7 +123,7 @@ Core inference:
 BVP history -> predicted Trend
 ```
 
-CGM is ground truth only, not a core inference feature.
+CGM is used for ground-truth generation/evaluation, not as a core inference feature.
 
 ### Required audit
 
@@ -156,7 +144,7 @@ glucose_stats
 trend_label_counts_by_candidate_protocol
 ```
 
-Compute support by both **windows** and **participants**.
+Report support by both **windows** and **participants**.
 
 ## Separation matrix
 
@@ -174,29 +162,26 @@ Compute support by both **windows** and **participants**.
 
 ## State-label contract
 
-Clinical/conceptual categories may be declared before modeling if their boundaries are defensible.
+Clinical/research candidate categories must be defensible and supported by the raw-data audit.
 
-Example vocabulary may be `LOW / NORMAL / ELEVATED`.
-
-But audit must determine whether each class has enough participant support to be evaluated as a primary ML class.
-
-Correct:
+Use:
 
 ```text
 audit
--> clinical candidate definitions
--> support review
--> freeze labels
--> model
+-> candidate definitions
+-> participant-support review
+-> optional development-only exploratory probe
+-> project-lead freeze
+-> registered model development
 -> final test
 ```
+
+The exploratory probe may compare simple learnability, but it cannot make an arbitrary or clinically indefensible threshold valid.
 
 Incorrect:
 
 ```text
-final test
--> change cutoff
--> retest
+final test -> change cutoff -> retest
 ```
 
 ## Trend-label contract
@@ -213,62 +198,32 @@ Candidate generator:
 CGM history ending at t -> slope -> thresholded direction
 ```
 
-Freeze before final test:
+Candidate parameters:
 
 - H;
 - slope method;
 - smoothing;
 - tau;
-- minimum valid CGM points;
+- minimum valid CGM support;
 - alignment tolerance;
 - gap policy.
 
-Candidate H:
+Candidate H: 15 / 30 / 60 min.
 
-```text
-15 / 30 / 60 min
-```
+These parameters may be compared on development data using candidate-support analysis and cheap exploratory probes.
 
-## Manifest schema
+They must be frozen before registered/final evidence.
 
-### Hb-PPG
+## Outer test reserve
 
-```text
-dataset
-dataset_version
-participant_id
-source_path
-checksum
-sampling_rate
-signal_length_seconds
-has_660/730/850/940
-glucose_reference
-reference_type
-missing_fraction
-exclusion_reason
-split
-processing_version
-```
+If model learnability will influence a label/protocol decision, create a leakage-safe outer test reserve before the probe.
 
-### BIG IDEAs
+The reserve:
 
-```text
-dataset
-dataset_version
-participant_id
-source_file
-modality
-checksum
-sampling_rate
-start_time
-end_time
-duration
-overlap_with_cgm
-missing_fraction
-exclusion_reason
-split_policy
-processing_version
-```
+- is excluded from exploratory analysis and fitting;
+- is not used to rank candidate labels/protocols;
+- is not regenerated because development results are disappointing;
+- becomes the basis of the final held-out evaluation unless a documented project-lead decision replaces it.
 
 ## Derived-sample provenance
 
@@ -282,28 +237,19 @@ window_start/end
 label + label_version + label_source
 preprocess_version
 feature_version
-split
+split / reserve status
 ```
 
-Never lose participant or temporal identity.
+Never lose participant/temporal identity.
 
 ## Storage policy
 
-```text
-data/raw/
--> immutable source data
+`data/raw/` is immutable.
+`data/interim/` holds aligned/cleaned native-derived data.
+`data/processed/` holds model-ready data.
+`data/manifests/` holds versions, checksums, splits, exclusions, provenance.
 
-data/interim/
--> aligned/cleaned native-derived data
-
-data/processed/
--> model-ready data
-
-data/manifests/
--> versions, checksums, splits, exclusions, provenance
-```
-
-For BIG IDEAs, process participant-wise/chunk-wise and prefer compact derived tables such as Parquet.
+For BIG IDEAs process participant-wise/chunk-wise and prefer Parquet for compact derived tables.
 
 ## External references
 
