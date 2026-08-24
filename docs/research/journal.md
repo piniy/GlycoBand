@@ -129,7 +129,8 @@ Probe or evidence used:
 `trend-split-v1`, `trend-feature-v1`, majority, always-STABLE, aligned Logistic Regression,
 current-window Logistic Regression, and a half-sequence within-participant circular-shift
 control. The feature artifact contains 22,038 development rows from 16 participants; the
-validation set contains 5,386 rows.
+validation set contains 5,386 rows. The complete report bundle was regenerated from clean
+commit `f781b9d` with `git_dirty=false` and complete BVP provenance.
 
 Finding:
 The predeclared result is `not_supported_for_classical_followup`. Validation Macro-F1 was
@@ -157,6 +158,8 @@ Evidence refs:
 - configs/trend/baseline-v1.yaml
 - reports/experiments/trend-baseline-v1/summary.md
 - reports/experiments/trend-baseline-v1/metrics.json
+- reports/experiments/trend-baseline-v1/environment.json
+- reports/experiments/trend-baseline-v1/dataset_manifest.json
 - reports/experiments/trend-baseline-v1/figures/
 - data/interim/trend/trend-baseline-features-v1.parquet
 

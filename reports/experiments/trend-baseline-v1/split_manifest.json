@@ -1,0 +1,330 @@
+{
+  "manifest_version": "trend-split-v1",
+  "protocol_version": "trend-label-v1",
+  "dataset": "BIG IDEAs v1.1.3",
+  "participant_count": 16,
+  "endpoint_count": 27913,
+  "usable_endpoint_count": 27529,
+  "split_counts": {
+    "excluded_embargo": 384,
+    "test": 5491,
+    "train": 16652,
+    "validation": 5386
+  },
+  "final_test_accessed": false,
+  "chronological_split_created": true,
+  "registered_model_started": false,
+  "git_revision": "1decee6eadf2b840b6f4f3b867d01d4fdc948d45",
+  "git_dirty": false,
+  "endpoint_artifact": {
+    "path": "data/interim/trend/trend-label-v1.parquet",
+    "sha256": "dd114a8bd285003a6d6a9127bd773eac00b93546fc519c72d4e1f17f46bdf722"
+  },
+  "source_manifest_sha256": "7f3d8674fc0ab70e4fa4844615b02c8b5d7bd8ceac8c021f770ed5de93c2b52a",
+  "protocol": {
+    "version": "trend-label-v1",
+    "dataset_name": "big_ideas",
+    "dataset_version": "1.1.3",
+    "classes": [
+      "FALLING",
+      "STABLE",
+      "RISING"
+    ],
+    "source": "cgm_history_ending_at_t",
+    "history_minutes": 30,
+    "smoothing": "median3",
+    "slope_method": "ols",
+    "threshold_mg_dl_min": 0.5,
+    "minimum_support_fraction": 0.8,
+    "maximum_cgm_gap_minutes": 10.0,
+    "requires_continuous_bvp_history": true,
+    "split_type": "within_person_chronological",
+    "train_fraction": 0.6,
+    "validation_fraction": 0.2,
+    "test_fraction": 0.2,
+    "embargo_minutes": 30
+  },
+  "participants": [
+    {
+      "participant_id": "001",
+      "bvp_source_file": "001/BVP_001.csv",
+      "cgm_source_file": "001/Dexcom_001.csv",
+      "endpoint_count": 2003,
+      "usable_endpoint_count": 1979,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 395,
+        "train": 1196,
+        "validation": 388
+      },
+      "first_timestamp": "2020-02-13T17:48:31",
+      "last_timestamp": "2020-02-22T17:53:23",
+      "train_boundary": "2020-02-19T03:28:27",
+      "validation_boundary": "2020-02-20T21:58:25"
+    },
+    {
+      "participant_id": "002",
+      "bvp_source_file": "002/BVP_002.csv",
+      "cgm_source_file": "002/Dexcom_002.csv",
+      "endpoint_count": 1822,
+      "usable_endpoint_count": 1796,
+      "split_counts": {
+        "excluded_embargo": 26,
+        "test": 358,
+        "train": 1087,
+        "validation": 351
+      },
+      "first_timestamp": "2020-02-21T11:33:35",
+      "last_timestamp": "2020-02-29T09:38:24",
+      "train_boundary": "2020-02-26T07:28:30",
+      "validation_boundary": "2020-02-27T15:23:28"
+    },
+    {
+      "participant_id": "003",
+      "bvp_source_file": "003/BVP_003.csv",
+      "cgm_source_file": "003/Dexcom_003.csv",
+      "endpoint_count": 1342,
+      "usable_endpoint_count": 1321,
+      "split_counts": {
+        "excluded_embargo": 21,
+        "test": 265,
+        "train": 799,
+        "validation": 257
+      },
+      "first_timestamp": "2020-02-22T18:41:43",
+      "last_timestamp": "2020-03-01T11:31:31",
+      "train_boundary": "2020-02-27T14:51:35",
+      "validation_boundary": "2020-02-28T13:11:34"
+    },
+    {
+      "participant_id": "004",
+      "bvp_source_file": "004/BVP_004.csv",
+      "cgm_source_file": "004/Dexcom_004.csv",
+      "endpoint_count": 1283,
+      "usable_endpoint_count": 1258,
+      "split_counts": {
+        "excluded_embargo": 25,
+        "test": 251,
+        "train": 763,
+        "validation": 244
+      },
+      "first_timestamp": "2020-02-27T21:41:20",
+      "last_timestamp": "2020-03-06T06:51:06",
+      "train_boundary": "2020-03-03T19:06:11",
+      "validation_boundary": "2020-03-04T18:26:09"
+    },
+    {
+      "participant_id": "005",
+      "bvp_source_file": "005/BVP_005.csv",
+      "cgm_source_file": "005/Dexcom_005.csv",
+      "endpoint_count": 2274,
+      "usable_endpoint_count": 2252,
+      "split_counts": {
+        "excluded_embargo": 22,
+        "test": 448,
+        "train": 1362,
+        "validation": 442
+      },
+      "first_timestamp": "2020-02-27T14:05:13",
+      "last_timestamp": "2020-03-07T11:46:05",
+      "train_boundary": "2020-03-04T01:41:15",
+      "validation_boundary": "2020-03-05T18:51:08"
+    },
+    {
+      "participant_id": "006",
+      "bvp_source_file": "006/BVP_006.csv",
+      "cgm_source_file": "006/Dexcom_006.csv",
+      "endpoint_count": 1589,
+      "usable_endpoint_count": 1563,
+      "split_counts": {
+        "excluded_embargo": 26,
+        "test": 311,
+        "train": 947,
+        "validation": 305
+      },
+      "first_timestamp": "2020-02-28T12:43:14",
+      "last_timestamp": "2020-03-09T09:27:51",
+      "train_boundary": "2020-03-03T19:03:05",
+      "validation_boundary": "2020-03-05T01:03:02"
+    },
+    {
+      "participant_id": "007",
+      "bvp_source_file": "007/BVP_007.csv",
+      "cgm_source_file": "007/Dexcom_007.csv",
+      "endpoint_count": 1987,
+      "usable_endpoint_count": 1963,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 392,
+        "train": 1186,
+        "validation": 385
+      },
+      "first_timestamp": "2020-03-14T13:07:19",
+      "last_timestamp": "2020-03-22T11:06:57",
+      "train_boundary": "2020-03-19T04:32:07",
+      "validation_boundary": "2020-03-20T21:12:02"
+    },
+    {
+      "participant_id": "008",
+      "bvp_source_file": "008/BVP_008.csv",
+      "cgm_source_file": "008/Dexcom_008.csv",
+      "endpoint_count": 2064,
+      "usable_endpoint_count": 2039,
+      "split_counts": {
+        "excluded_embargo": 25,
+        "test": 406,
+        "train": 1232,
+        "validation": 401
+      },
+      "first_timestamp": "2020-03-14T14:29:53",
+      "last_timestamp": "2020-03-23T11:39:31",
+      "train_boundary": "2020-03-19T19:59:39",
+      "validation_boundary": "2020-03-21T15:59:35"
+    },
+    {
+      "participant_id": "009",
+      "bvp_source_file": "009/BVP_009.csv",
+      "cgm_source_file": "009/Dexcom_009.csv",
+      "endpoint_count": 2034,
+      "usable_endpoint_count": 2011,
+      "split_counts": {
+        "excluded_embargo": 23,
+        "test": 401,
+        "train": 1214,
+        "validation": 396
+      },
+      "first_timestamp": "2020-03-21T11:16:52",
+      "last_timestamp": "2020-03-29T10:56:41",
+      "train_boundary": "2020-03-26T10:21:44",
+      "validation_boundary": "2020-03-27T23:01:43"
+    },
+    {
+      "participant_id": "010",
+      "bvp_source_file": "010/BVP_010.csv",
+      "cgm_source_file": "010/Dexcom_010.csv",
+      "endpoint_count": 1960,
+      "usable_endpoint_count": 1936,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 386,
+        "train": 1171,
+        "validation": 379
+      },
+      "first_timestamp": "2020-03-22T11:49:18",
+      "last_timestamp": "2020-03-30T09:19:02",
+      "train_boundary": "2020-03-27T01:29:10",
+      "validation_boundary": "2020-03-28T13:49:05"
+    },
+    {
+      "participant_id": "011",
+      "bvp_source_file": "011/BVP_011.csv",
+      "cgm_source_file": "011/Dexcom_011.csv",
+      "endpoint_count": 2087,
+      "usable_endpoint_count": 2063,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 412,
+        "train": 1246,
+        "validation": 405
+      },
+      "first_timestamp": "2020-04-06T09:51:10",
+      "last_timestamp": "2020-04-16T07:20:51",
+      "train_boundary": "2020-04-12T19:30:57",
+      "validation_boundary": "2020-04-14T12:10:54"
+    },
+    {
+      "participant_id": "012",
+      "bvp_source_file": "012/BVP_012.csv",
+      "cgm_source_file": "012/Dexcom_012.csv",
+      "endpoint_count": 1888,
+      "usable_endpoint_count": 1864,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 372,
+        "train": 1126,
+        "validation": 366
+      },
+      "first_timestamp": "2020-05-03T18:17:13",
+      "last_timestamp": "2020-05-11T09:31:59",
+      "train_boundary": "2020-05-08T08:12:03",
+      "validation_boundary": "2020-05-09T16:42:02"
+    },
+    {
+      "participant_id": "013",
+      "bvp_source_file": "013/BVP_013.csv",
+      "cgm_source_file": "013/Dexcom_013.csv",
+      "endpoint_count": 1811,
+      "usable_endpoint_count": 1787,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 357,
+        "train": 1080,
+        "validation": 350
+      },
+      "first_timestamp": "2020-05-28T15:46:57",
+      "last_timestamp": "2020-06-04T12:11:40",
+      "train_boundary": "2020-06-01T20:06:46",
+      "validation_boundary": "2020-06-03T03:31:42"
+    },
+    {
+      "participant_id": "014",
+      "bvp_source_file": "014/BVP_014.csv",
+      "cgm_source_file": "014/Dexcom_014.csv",
+      "endpoint_count": 1506,
+      "usable_endpoint_count": 1482,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 296,
+        "train": 897,
+        "validation": 289
+      },
+      "first_timestamp": "2020-06-06T23:08:07",
+      "last_timestamp": "2020-06-13T10:32:55",
+      "train_boundary": "2020-06-10T21:53:00",
+      "validation_boundary": "2020-06-12T07:32:57"
+    },
+    {
+      "participant_id": "015",
+      "bvp_source_file": "015/BVP_015.csv",
+      "cgm_source_file": "015/Dexcom_015.csv",
+      "endpoint_count": 478,
+      "usable_endpoint_count": 454,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 90,
+        "train": 281,
+        "validation": 83
+      },
+      "first_timestamp": "2020-07-19T17:58:52",
+      "last_timestamp": "2020-07-25T11:03:48",
+      "train_boundary": "2020-07-24T19:08:50",
+      "validation_boundary": "2020-07-25T03:08:49"
+    },
+    {
+      "participant_id": "016",
+      "bvp_source_file": "016/BVP_016.csv",
+      "cgm_source_file": "016/Dexcom_016.csv",
+      "endpoint_count": 1785,
+      "usable_endpoint_count": 1761,
+      "split_counts": {
+        "excluded_embargo": 24,
+        "test": 351,
+        "train": 1065,
+        "validation": 345
+      },
+      "first_timestamp": "2020-07-16T11:08:24",
+      "last_timestamp": "2020-07-23T22:23:07",
+      "train_boundary": "2020-07-21T08:13:13",
+      "validation_boundary": "2020-07-22T16:43:11"
+    }
+  ],
+  "endpoint_identity": [
+    "participant_id",
+    "timestamp"
+  ],
+  "raw_history_identity": [
+    "participant_id",
+    "history_start",
+    "timestamp"
+  ]
+}

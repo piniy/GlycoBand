@@ -1,0 +1,1 @@
+Runner completed; full terminal progress intentionally not persisted.

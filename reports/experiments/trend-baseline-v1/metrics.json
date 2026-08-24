@@ -1,0 +1,346 @@
+{
+  "experiment_id": "trend-baseline-v1",
+  "evidence_level": "registered_development",
+  "dataset": "big_ideas v1.1.3",
+  "protocol_version": "trend-label-v1",
+  "split_version": "trend-split-v1",
+  "feature_version": "trend-feature-v1",
+  "final_test_accessed": false,
+  "train_rows": 16652,
+  "validation_rows": 5386,
+  "participant_count": 16,
+  "feature_count": 50,
+  "history_feature_columns": [
+    "history_mean_mean",
+    "history_mean_std",
+    "history_mean_min",
+    "history_mean_max",
+    "history_mean_last",
+    "history_std_mean",
+    "history_std_std",
+    "history_std_min",
+    "history_std_max",
+    "history_std_last",
+    "history_min_mean",
+    "history_min_std",
+    "history_min_min",
+    "history_min_max",
+    "history_min_last",
+    "history_max_mean",
+    "history_max_std",
+    "history_max_min",
+    "history_max_max",
+    "history_max_last",
+    "history_q25_mean",
+    "history_q25_std",
+    "history_q25_min",
+    "history_q25_max",
+    "history_q25_last",
+    "history_q75_mean",
+    "history_q75_std",
+    "history_q75_min",
+    "history_q75_max",
+    "history_q75_last",
+    "history_mean_abs_diff_mean",
+    "history_mean_abs_diff_std",
+    "history_mean_abs_diff_min",
+    "history_mean_abs_diff_max",
+    "history_mean_abs_diff_last",
+    "history_diff_std_mean",
+    "history_diff_std_std",
+    "history_diff_std_min",
+    "history_diff_std_max",
+    "history_diff_std_last",
+    "history_flat_fraction_mean",
+    "history_flat_fraction_std",
+    "history_flat_fraction_min",
+    "history_flat_fraction_max",
+    "history_flat_fraction_last",
+    "history_slope_per_min_mean",
+    "history_slope_per_min_std",
+    "history_slope_per_min_min",
+    "history_slope_per_min_max",
+    "history_slope_per_min_last"
+  ],
+  "current_window_feature_columns": [
+    "history_mean_last",
+    "history_std_last",
+    "history_min_last",
+    "history_max_last",
+    "history_q25_last",
+    "history_q75_last",
+    "history_mean_abs_diff_last",
+    "history_diff_std_last",
+    "history_flat_fraction_last",
+    "history_slope_per_min_last"
+  ],
+  "models": [
+    {
+      "model": "majority",
+      "feature_set": [],
+      "macro_f1": 0.28686270361751637,
+      "balanced_accuracy": 0.3333333333333333,
+      "opposite_direction_error_rate": 0.0,
+      "per_class": {
+        "FALLING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 645
+        },
+        "STABLE": {
+          "precision": 0.7552914964723357,
+          "recall": 1.0,
+          "f1": 0.8605881108525492,
+          "support": 4068
+        },
+        "RISING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 673
+        }
+      }
+    },
+    {
+      "model": "always_stable",
+      "feature_set": [],
+      "macro_f1": 0.28686270361751637,
+      "balanced_accuracy": 0.3333333333333333,
+      "opposite_direction_error_rate": 0.0,
+      "per_class": {
+        "FALLING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 645
+        },
+        "STABLE": {
+          "precision": 0.7552914964723357,
+          "recall": 1.0,
+          "f1": 0.8605881108525492,
+          "support": 4068
+        },
+        "RISING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 673
+        }
+      }
+    },
+    {
+      "model": "logistic_history",
+      "feature_set": [
+        "history_mean_mean",
+        "history_mean_std",
+        "history_mean_min",
+        "history_mean_max",
+        "history_mean_last",
+        "history_std_mean",
+        "history_std_std",
+        "history_std_min",
+        "history_std_max",
+        "history_std_last",
+        "history_min_mean",
+        "history_min_std",
+        "history_min_min",
+        "history_min_max",
+        "history_min_last",
+        "history_max_mean",
+        "history_max_std",
+        "history_max_min",
+        "history_max_max",
+        "history_max_last",
+        "history_q25_mean",
+        "history_q25_std",
+        "history_q25_min",
+        "history_q25_max",
+        "history_q25_last",
+        "history_q75_mean",
+        "history_q75_std",
+        "history_q75_min",
+        "history_q75_max",
+        "history_q75_last",
+        "history_mean_abs_diff_mean",
+        "history_mean_abs_diff_std",
+        "history_mean_abs_diff_min",
+        "history_mean_abs_diff_max",
+        "history_mean_abs_diff_last",
+        "history_diff_std_mean",
+        "history_diff_std_std",
+        "history_diff_std_min",
+        "history_diff_std_max",
+        "history_diff_std_last",
+        "history_flat_fraction_mean",
+        "history_flat_fraction_std",
+        "history_flat_fraction_min",
+        "history_flat_fraction_max",
+        "history_flat_fraction_last",
+        "history_slope_per_min_mean",
+        "history_slope_per_min_std",
+        "history_slope_per_min_min",
+        "history_slope_per_min_max",
+        "history_slope_per_min_last"
+      ],
+      "macro_f1": 0.28894083540270304,
+      "balanced_accuracy": 0.33428498471717244,
+      "opposite_direction_error_rate": 0.0,
+      "per_class": {
+        "FALLING": {
+          "precision": 0.6666666666666666,
+          "recall": 0.0031007751937984496,
+          "f1": 0.006172839506172839,
+          "support": 645
+        },
+        "STABLE": {
+          "precision": 0.7555266579973993,
+          "recall": 0.9997541789577188,
+          "f1": 0.8606496667019363,
+          "support": 4068
+        },
+        "RISING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 673
+        }
+      }
+    },
+    {
+      "model": "logistic_current_window",
+      "feature_set": [
+        "history_mean_last",
+        "history_std_last",
+        "history_min_last",
+        "history_max_last",
+        "history_q25_last",
+        "history_q75_last",
+        "history_mean_abs_diff_last",
+        "history_diff_std_last",
+        "history_flat_fraction_last",
+        "history_slope_per_min_last"
+      ],
+      "macro_f1": 0.28686270361751637,
+      "balanced_accuracy": 0.3333333333333333,
+      "opposite_direction_error_rate": 0.0,
+      "per_class": {
+        "FALLING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 645
+        },
+        "STABLE": {
+          "precision": 0.7552914964723357,
+          "recall": 1.0,
+          "f1": 0.8605881108525492,
+          "support": 4068
+        },
+        "RISING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 673
+        }
+      }
+    },
+    {
+      "model": "logistic_shifted_control",
+      "feature_set": [
+        "history_mean_mean",
+        "history_mean_std",
+        "history_mean_min",
+        "history_mean_max",
+        "history_mean_last",
+        "history_std_mean",
+        "history_std_std",
+        "history_std_min",
+        "history_std_max",
+        "history_std_last",
+        "history_min_mean",
+        "history_min_std",
+        "history_min_min",
+        "history_min_max",
+        "history_min_last",
+        "history_max_mean",
+        "history_max_std",
+        "history_max_min",
+        "history_max_max",
+        "history_max_last",
+        "history_q25_mean",
+        "history_q25_std",
+        "history_q25_min",
+        "history_q25_max",
+        "history_q25_last",
+        "history_q75_mean",
+        "history_q75_std",
+        "history_q75_min",
+        "history_q75_max",
+        "history_q75_last",
+        "history_mean_abs_diff_mean",
+        "history_mean_abs_diff_std",
+        "history_mean_abs_diff_min",
+        "history_mean_abs_diff_max",
+        "history_mean_abs_diff_last",
+        "history_diff_std_mean",
+        "history_diff_std_std",
+        "history_diff_std_min",
+        "history_diff_std_max",
+        "history_diff_std_last",
+        "history_flat_fraction_mean",
+        "history_flat_fraction_std",
+        "history_flat_fraction_min",
+        "history_flat_fraction_max",
+        "history_flat_fraction_last",
+        "history_slope_per_min_mean",
+        "history_slope_per_min_std",
+        "history_slope_per_min_min",
+        "history_slope_per_min_max",
+        "history_slope_per_min_last"
+      ],
+      "macro_f1": 0.28686270361751637,
+      "balanced_accuracy": 0.3333333333333333,
+      "opposite_direction_error_rate": 0.0,
+      "per_class": {
+        "FALLING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 645
+        },
+        "STABLE": {
+          "precision": 0.7552914964723357,
+          "recall": 1.0,
+          "f1": 0.8605881108525492,
+          "support": 4068
+        },
+        "RISING": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 673
+        }
+      }
+    }
+  ],
+  "paired_participant_bootstrap": {
+    "history_minus_best_constant": {
+      "mean_delta": 0.0012877134824085222,
+      "ci_lower": -5.553135888501895e-05,
+      "ci_upper": 0.003945409127055224
+    },
+    "history_minus_shifted_control": {
+      "mean_delta": 0.0012877134824085222,
+      "ci_lower": -8.226867982965777e-05,
+      "ci_upper": 0.003945409127055224
+    },
+    "history_minus_current_window": {
+      "mean_delta": 0.0012877134824085222,
+      "ci_lower": -8.226867982965777e-05,
+      "ci_upper": 0.003945409127055224
+    }
+  },
+  "best_constant": "majority",
+  "decision": "not_supported_for_classical_followup"
+}

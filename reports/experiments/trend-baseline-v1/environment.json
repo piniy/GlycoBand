@@ -1,0 +1,10 @@
+{
+  "git_revision": "f781b9d47785e7c7b3b87fdc5355440c281d4d76",
+  "git_dirty": false,
+  "python_version": "3.11.15",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "command": "uv run --frozen python scripts/run_trend_baseline.py --from-features",
+  "config_sha256": "eec69e41287919159be76ff363f26b9b78f621fd367256fd31666f2a50b92476",
+  "split_manifest_sha256": "6afa0041381208a9f60a765d86e6bcfaca00836450bac49e4d9c5f8d4df3fb79",
+  "final_test_accessed": false
+}
