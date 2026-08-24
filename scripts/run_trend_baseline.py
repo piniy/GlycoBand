@@ -7,7 +7,6 @@ import hashlib
 import json
 import platform
 import subprocess
-import sys
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -120,6 +119,43 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _prepare_output_directory(path: Path) -> None:
+    """Create a new experiment directory without overwriting prior evidence."""
+
+    if path.exists():
+        raise FileExistsError(f"Experiment directory already exists: {path}")
+    path.mkdir(parents=True)
+
+
+def _environment_record(
+    *,
+    root: Path,
+    command: str,
+    config_sha256: str,
+    split_manifest_sha256: str,
+) -> dict[str, object]:
+    """Capture the committed input identity before generating report files."""
+
+    git_revision = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=root, text=True
+    ).strip()
+    git_dirty = bool(
+        subprocess.check_output(
+            ["git", "status", "--porcelain"], cwd=root, text=True
+        ).strip()
+    )
+    return {
+        "git_revision": git_revision,
+        "git_dirty": git_dirty,
+        "python_version": platform.python_version(),
+        "platform": platform.platform(),
+        "command": command,
+        "config_sha256": config_sha256,
+        "split_manifest_sha256": split_manifest_sha256,
+        "final_test_accessed": False,
+    }
+
+
 def _write_figures(
     report_dir: Path,
     report: dict[str, object],
@@ -193,6 +229,7 @@ def _write_metadata(
     features: pd.DataFrame,
     report: dict[str, object],
     config_path: Path,
+    environment: dict[str, object],
 ) -> None:
     (report_dir / "config.yaml").write_text(
         config_path.read_text(encoding="utf-8"), encoding="utf-8"
@@ -222,22 +259,6 @@ def _write_metadata(
     (report_dir / "dataset_manifest.json").write_text(
         json.dumps(dataset_manifest, indent=2) + "\n", encoding="utf-8"
     )
-    git_revision = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=root, text=True
-    ).strip()
-    git_dirty = bool(
-        subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True).strip()
-    )
-    environment = {
-        "git_revision": git_revision,
-        "git_dirty": git_dirty,
-        "python_version": sys.version,
-        "platform": platform.platform(),
-        "command": "uv run --frozen python scripts/run_trend_baseline.py",
-        "config_sha256": _sha256(config_path),
-        "split_manifest_sha256": _sha256(split_manifest_path),
-        "final_test_accessed": False,
-    }
     (report_dir / "environment.json").write_text(
         json.dumps(environment, indent=2) + "\n", encoding="utf-8"
     )
@@ -263,6 +284,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     endpoints = _load_development_endpoints(split_path)
     dataset_root = root / "data/raw/bigideas/v1.1.3"
     feature_path = root / "data/interim/trend/trend-baseline-features-v1.parquet"
+    report_dir = root / "reports/experiments/trend-baseline-v1"
+    command = "uv run --frozen python scripts/run_trend_baseline.py"
+    if arguments.from_features:
+        command += " --from-features"
+    environment = _environment_record(
+        root=root,
+        command=command,
+        config_sha256=_sha256(config_path),
+        split_manifest_sha256=_sha256(root / "data/manifests/trend_split-v1.json"),
+    )
+    if environment["git_dirty"]:
+        raise RuntimeError("Registered Trend baseline requires a clean Git revision")
 
     if arguments.from_features:
         features = pd.read_parquet(feature_path)
@@ -310,9 +343,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     report, predictions, participant_metrics = evaluate_trend_baselines(features, config)
 
     feature_dir = root / "data/interim/trend"
-    report_dir = root / "reports/experiments/trend-baseline-v1"
     feature_dir.mkdir(parents=True, exist_ok=True)
-    report_dir.mkdir(parents=True, exist_ok=True)
+    _prepare_output_directory(report_dir)
     features.to_parquet(feature_path, index=False)
     predictions.to_parquet(report_dir / "predictions.parquet", index=False)
     participant_metrics.to_csv(report_dir / "per_participant.csv", index=False)
@@ -320,7 +352,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         json.dumps(report, indent=2) + "\n", encoding="utf-8"
     )
     _write_summary(report_dir / "summary.md", report)
-    _write_metadata(root, report_dir, feature_path, features, report, config_path)
+    _write_metadata(root, report_dir, feature_path, features, report, config_path, environment)
     _write_figures(report_dir, report, predictions, participant_metrics)
     model_rows = report["models"]
     assert isinstance(model_rows, list)
