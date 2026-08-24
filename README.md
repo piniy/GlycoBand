@@ -70,4 +70,4 @@ development-only resolution is in
 The 44-person State reserve remains sealed; reopening State requires an explicit project-lead
 decision.
 
-The completed preparation sequence is retained in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). The next Trend lake is registered baseline development using training and validation partitions only. The final test remains sealed until its separate access decision is frozen.
+The completed preparation sequence is retained in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). Trend registered baseline development is complete on training and validation partitions: the predeclared result is `not_supported_for_classical_followup`, and the final test remains sealed.

@@ -117,3 +117,45 @@ Evidence refs:
 - data/manifests/trend_split-v1.json
 - data/interim/trend/trend-label-v1.parquet
 - src/glycoband/evaluation/trend_split.py
+
+## 2026-08-25 — Trend registered development baseline
+
+Question:
+Does aligned H30 wrist BVP contain development-validation predictive information for recent
+CGM-derived direction beyond constants and a within-participant temporal-shift control?
+
+Probe or evidence used:
+`trend-baseline-v1` used BIG IDEAs v1.1.3 train/validation rows only, `trend-label-v1`,
+`trend-split-v1`, `trend-feature-v1`, majority, always-STABLE, aligned Logistic Regression,
+current-window Logistic Regression, and a half-sequence within-participant circular-shift
+control. The feature artifact contains 22,038 development rows from 16 participants; the
+validation set contains 5,386 rows.
+
+Finding:
+The predeclared result is `not_supported_for_classical_followup`. Validation Macro-F1 was
+0.2869 for majority and always-STABLE, 0.2889 for the aligned H30 history model, 0.2869 for
+the current-window ablation, and 0.2869 for the shifted control. The history model's balanced
+accuracy was 0.3343. Its directional recall was 0.0031 for FALLING and 0.0000 for RISING;
+the participant-bootstrap 95% interval for history minus the best constant was
+[-0.00006, 0.00395], and history minus the shifted control was [-0.00008, 0.00395].
+
+What this does not prove:
+No final-test performance was accessed. This result does not establish general-population
+validity, direct glucose measurement, clinical utility, or physical-device validity.
+
+Confidence:
+The leakage and final-test checks passed, but uncertainty remains because the result uses 16
+participants, strong STABLE-class imbalance, and weak minority-class recall. The validation
+result does not justify expanding the classical Trend model family from this lake alone.
+
+Recommended next action:
+Keep the final test sealed and do not promote a classical Trend model. Preserve the report as
+feasibility evidence; any new representation or label change requires a separately approved
+development decision rather than tuning this result.
+
+Evidence refs:
+- configs/trend/baseline-v1.yaml
+- reports/experiments/trend-baseline-v1/summary.md
+- reports/experiments/trend-baseline-v1/metrics.json
+- reports/experiments/trend-baseline-v1/figures/
+- data/interim/trend/trend-baseline-features-v1.parquet
