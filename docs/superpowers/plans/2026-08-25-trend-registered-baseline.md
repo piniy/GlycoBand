@@ -55,7 +55,7 @@
 - Consumes: the existing worktree line `APPROVE TREND GATE D PACKAGE - RNA`.
 - Produces: a Git commit that predates the regenerated Trend manifest and is auditable as the human approval record.
 
-- [ ] **Step 1: Verify the approval is present without manufacturing or rewriting it**
+- [x] **Step 1: Verify the approval is present without manufacturing or rewriting it**
 
 Run:
 
@@ -66,7 +66,7 @@ git diff -- docs/research/gate_d_decision_brief.md
 
 Expected: exactly one matching approval line, and the diff adds only that signed approval record.
 
-- [ ] **Step 2: Confirm unrelated work remains unstaged**
+- [x] **Step 2: Confirm unrelated work remains unstaged**
 
 Run:
 
@@ -77,7 +77,7 @@ git diff --cached --name-only
 
 Expected: the worktree may contain unrelated changes, but the index is empty.
 
-- [ ] **Step 3: Commit only the approval record**
+- [x] **Step 3: Commit only the approval record**
 
 ```powershell
 git add -- docs/research/gate_d_decision_brief.md
@@ -88,7 +88,7 @@ git commit -m "docs(research): record Trend Gate D approval"
 
 Expected: the staged-name check lists only `docs/research/gate_d_decision_brief.md`; the commit succeeds.
 
-- [ ] **Step 4: Record the approval commit for later verification**
+- [x] **Step 4: Record the approval commit for later verification**
 
 Run:
 
@@ -114,7 +114,7 @@ Expected: the committed file contains the signed approval line.
 - Consumes: `TrendProtocol`, the generated endpoint frame, `data/manifests/source_manifest.json`, and the ignored endpoint Parquet.
 - Produces: `validate_endpoint_frame(...)` that enforces H30/support/provenance and `build_manifest_payload(...)` that refuses dirty revisions and records SHA-256 identities.
 
-- [ ] **Step 1: Add failing endpoint-contract tests**
+- [x] **Step 1: Add failing endpoint-contract tests**
 
 Add these tests to `tests/labels/test_trend.py`:
 
@@ -158,7 +158,7 @@ Also update `_endpoints()` so valid fixtures include:
 "slope_method": ["ols"] * 3,
 ```
 
-- [ ] **Step 2: Run the endpoint tests and confirm the demonstrated hazards fail**
+- [x] **Step 2: Run the endpoint tests and confirm the demonstrated hazards fail**
 
 Run:
 
@@ -168,7 +168,7 @@ uv run --frozen pytest -q tests/labels/test_trend.py
 
 Expected: the three new tests fail because the validator currently accepts short history, one support point, and mismatched protocol provenance.
 
-- [ ] **Step 3: Implement exact endpoint validation**
+- [x] **Step 3: Implement exact endpoint validation**
 
 In `src/glycoband/labels/trend.py`, add `math`, require the two provenance columns, and extend `validate_endpoint_frame` with:
 
@@ -212,7 +212,7 @@ for column in ("participant_id", "bvp_source_file", "cgm_source_file"):
         raise ValueError(f"Trend endpoint column {column!r} contains empty provenance")
 ```
 
-- [ ] **Step 4: Run endpoint tests**
+- [x] **Step 4: Run endpoint tests**
 
 Run:
 
@@ -222,7 +222,7 @@ uv run --frozen pytest -q tests/labels/test_trend.py tests/evaluation/test_trend
 
 Expected: all tests pass.
 
-- [ ] **Step 5: Add failing clean-manifest and checksum tests**
+- [x] **Step 5: Add failing clean-manifest and checksum tests**
 
 Update `tests/scripts/test_build_trend_split_manifest.py` so every `build_manifest_payload` call passes endpoint and source hashes. Add:
 
@@ -265,7 +265,7 @@ def test_manifest_payload_records_artifact_hashes(protocol) -> None:
     assert payload["source_manifest_sha256"] == "b" * 64
 ```
 
-- [ ] **Step 6: Run the manifest tests and verify failure**
+- [x] **Step 6: Run the manifest tests and verify failure**
 
 Run:
 
@@ -275,7 +275,7 @@ uv run --frozen pytest -q tests/scripts/test_build_trend_split_manifest.py
 
 Expected: failure because the manifest function does not accept or record hashes and does not reject dirty Git state.
 
-- [ ] **Step 7: Implement clean manifest requirements**
+- [x] **Step 7: Implement clean manifest requirements**
 
 Change `build_manifest_payload` in `src/glycoband/evaluation/trend_manifest.py` to accept:
 
@@ -314,7 +314,7 @@ Add these payload fields:
 "source_manifest_sha256": source_manifest_sha256.lower(),
 ```
 
-- [ ] **Step 8: Hash artifacts in the manifest runner before writing JSON**
+- [x] **Step 8: Hash artifacts in the manifest runner before writing JSON**
 
 Add to `scripts/build_trend_split_manifest.py`:
 
@@ -343,7 +343,7 @@ manifest = build_manifest_payload(
 )
 ```
 
-- [ ] **Step 9: Run focused tests, lint, and types**
+- [x] **Step 9: Run focused tests, lint, and types**
 
 Run:
 
@@ -355,7 +355,7 @@ uv run --frozen mypy src/glycoband/labels/trend.py src/glycoband/evaluation/tren
 
 Expected: all commands exit `0`.
 
-- [ ] **Step 10: Commit the endpoint and manifest guards**
+- [x] **Step 10: Commit the endpoint and manifest guards**
 
 ```powershell
 git add -- src/glycoband/labels/trend.py src/glycoband/evaluation/trend_manifest.py scripts/build_trend_split_manifest.py tests/labels/test_trend.py tests/scripts/test_build_trend_split_manifest.py
@@ -376,7 +376,7 @@ git commit -m "fix(trend): enforce frozen endpoint provenance"
 - Consumes: committed project-lead approval and committed endpoint/manifest guards.
 - Produces: a clean, hashed `trend-split-v1` anchor for downstream registered development.
 
-- [ ] **Step 1: Verify the scoped source tree is clean enough to regenerate**
+- [x] **Step 1: Verify the scoped source tree is clean enough to regenerate**
 
 Run:
 
@@ -387,13 +387,13 @@ git diff -- docs/research/gate_d_decision_brief.md src/glycoband/labels/trend.py
 
 Expected: no changes in the listed scientific-anchor files. Unrelated user changes may remain, but the manifest runner must still refuse to write a frozen manifest while Git reports dirty.
 
-- [ ] **Step 2: Use a clean worktree at execution time if unrelated changes remain**
+- [x] **Step 2: Use a clean worktree at execution time if unrelated changes remain**
 
 Do not stash, reset, or discard the user’s work. Create a temporary clean worktree from the current committed branch using the execution workflow’s worktree skill, copy no uncommitted files into it, and run all remaining Task 3 commands there.
 
 Expected: `git status --porcelain` in the execution worktree returns no output.
 
-- [ ] **Step 3: Regenerate the endpoint Parquet and split manifest**
+- [x] **Step 3: Regenerate the endpoint Parquet and split manifest**
 
 Run:
 
@@ -403,7 +403,7 @@ uv run --frozen python scripts/build_trend_split_manifest.py
 
 Expected: 16 participants, 27,913 endpoints, 27,529 usable endpoints, 384 embargo exclusions, and `final_test_accessed=false`.
 
-- [ ] **Step 4: Verify Git identity and both hashes**
+- [x] **Step 4: Verify Git identity and both hashes**
 
 Run:
 
@@ -413,7 +413,7 @@ uv run --frozen python -c "import hashlib,json,pathlib,subprocess; root=pathlib.
 
 Expected: `PASS clean revision and hashes`.
 
-- [ ] **Step 5: Append a compact audit correction to the journal**
+- [x] **Step 5: Append a compact audit correction to the journal**
 
 Append this exact section to `docs/research/journal.md`:
 
@@ -436,7 +436,7 @@ Decision / next direction:
 Proceed to the predeclared train/validation-only baseline feature and control package.
 ```
 
-- [ ] **Step 6: Commit the regenerated anchor and journal correction**
+- [x] **Step 6: Commit the regenerated anchor and journal correction**
 
 ```powershell
 git add -- data/manifests/trend_split-v1.json docs/research/journal.md
@@ -460,7 +460,7 @@ Do not force-add the ignored endpoint Parquet; its content identity is carried b
 - Consumes: BVP CSV paths, development endpoints, `trend-label-v1`, and `trend-split-v1`.
 - Produces: `extract_bvp_window_features(...) -> pd.DataFrame` and `aggregate_bvp_history_features(...) -> pd.DataFrame` with causal H30 features and explicit provenance.
 
-- [ ] **Step 1: Create the predeclared baseline configuration**
+- [x] **Step 1: Create the predeclared baseline configuration**
 
 Create `configs/trend/baseline-v1.yaml` with:
 
@@ -533,7 +533,7 @@ The value `59` is derived, not tuned: a continuous arbitrary-alignment 30-minute
 
 The preprocessing policy is intentionally a frozen raw-feature baseline, not an optimized pipeline. Signal-quality fields remain visible for interpretation, but this lake does not select an SQI threshold from validation performance.
 
-- [ ] **Step 2: Add failing physical-unit, isolation, coverage, provenance, and test-seal tests**
+- [x] **Step 2: Add failing physical-unit, isolation, coverage, provenance, and test-seal tests**
 
 Add to `tests/features/test_trend.py`:
 
@@ -603,7 +603,7 @@ def test_history_aggregation_preserves_provenance() -> None:
 
 Implement `_valid_windows()` and `_valid_endpoints()` as deterministic 30-minute fixtures with one participant, 60 contiguous 30-second windows, `train` split, `trend-label-v1`, `trend-split-v1`, and a real-looking source path.
 
-- [ ] **Step 3: Run the feature tests and confirm failure**
+- [x] **Step 3: Run the feature tests and confirm failure**
 
 Run:
 
@@ -613,7 +613,7 @@ uv run --frozen pytest -q tests/features/test_trend.py
 
 Expected: failures expose the current `15` versus `60` slope error, missing participant enforcement, test-row acceptance, and lost provenance.
 
-- [ ] **Step 4: Correct slope units using actual timestamps**
+- [x] **Step 4: Correct slope units using actual timestamps**
 
 In `_window_feature_rows`, calculate OLS slopes against elapsed minutes rather than sample indices:
 
@@ -629,7 +629,7 @@ slopes = np.sum((matrix - means[:, None]) * centered_minutes, axis=1) / denomina
 
 Remove the existing sample-index calculation and the `* 60.0` scaling.
 
-- [ ] **Step 5: Enforce development-only participant-isolated aggregation**
+- [x] **Step 5: Enforce development-only participant-isolated aggregation**
 
 Set:
 
@@ -678,7 +678,7 @@ Within `_aggregate_history`, require at least `minimum_complete_windows`, requir
 "feature_version": FEATURE_VERSION,
 ```
 
-- [ ] **Step 6: Export the feature contract**
+- [x] **Step 6: Export the feature contract**
 
 Update `src/glycoband/features/__init__.py` to import in Ruff-sorted order and export:
 
@@ -698,7 +698,7 @@ __all__ = [
 ]
 ```
 
-- [ ] **Step 7: Run feature validation**
+- [x] **Step 7: Run feature validation**
 
 Run:
 
@@ -710,7 +710,7 @@ uv run --frozen mypy src/glycoband/features/trend.py
 
 Expected: all commands exit `0`. If Ruff does not accept YAML paths in the installed version, rerun Ruff on the Python paths only and validate YAML by loading it with `yaml.safe_load`.
 
-- [ ] **Step 8: Commit the feature contract**
+- [x] **Step 8: Commit the feature contract**
 
 ```powershell
 git add -- configs/trend/baseline-v1.yaml src/glycoband/features/trend.py src/glycoband/features/__init__.py tests/features/test_trend.py
@@ -731,7 +731,7 @@ git commit -m "feat(trend): freeze baseline BVP features"
 - Consumes: `trend-feature-v1` development rows and `configs/trend/baseline-v1.yaml`.
 - Produces: `evaluate_trend_baselines(features, config) -> tuple[dict[str, object], pd.DataFrame, pd.DataFrame]` containing aggregate metrics, predictions, and per-participant metrics.
 
-- [ ] **Step 1: Add failing explicit-column and control tests**
+- [x] **Step 1: Add failing explicit-column and control tests**
 
 Add tests that require:
 
@@ -778,7 +778,7 @@ def test_evaluator_reports_opposite_direction_errors_and_bootstrap_deltas() -> N
 
 The `_config()` fixture must load `configs/trend/baseline-v1.yaml`; `_features()` must include all explicit history `mean/std/min/max/last` columns for every `SHORT_WINDOW_FEATURES` entry and all required provenance fields.
 
-- [ ] **Step 2: Run tests and confirm failure**
+- [x] **Step 2: Run tests and confirm failure**
 
 Run:
 
@@ -788,7 +788,7 @@ uv run --frozen pytest -q tests/evaluation/test_trend_baseline.py
 
 Expected: failure because the current evaluator auto-selects numeric columns and lacks the ablation, shift control, bootstrap deltas, and opposite-direction metric.
 
-- [ ] **Step 3: Load and validate the baseline config**
+- [x] **Step 3: Load and validate the baseline config**
 
 Add:
 
@@ -816,7 +816,7 @@ def load_trend_baseline_config(path: Path) -> dict[str, Any]:
     return config
 ```
 
-- [ ] **Step 4: Select predictor columns explicitly**
+- [x] **Step 4: Select predictor columns explicitly**
 
 Add:
 
@@ -835,7 +835,7 @@ def _current_window_feature_columns() -> list[str]:
 
 Reject missing columns. Do not infer predictors by numeric dtype.
 
-- [ ] **Step 5: Implement the deterministic within-participant shift control**
+- [x] **Step 5: Implement the deterministic within-participant shift control**
 
 Add:
 
@@ -856,7 +856,7 @@ def _circular_shift_features(
 
 Use the shifted training features to fit the shifted-control pipeline and shifted validation features to evaluate it. Keep labels and split membership fixed.
 
-- [ ] **Step 6: Implement the missing metric and paired participant bootstrap**
+- [x] **Step 6: Implement the missing metric and paired participant bootstrap**
 
 Add:
 
@@ -890,7 +890,7 @@ def _bootstrap_mean_delta(
 
 Build participant-aligned Macro-F1 series for `logistic_history` versus the best constant, shifted control, and current-window ablation. Use the exact repeat count and seed from the config.
 
-- [ ] **Step 7: Return all five variants and the predeclared decision status**
+- [x] **Step 7: Return all five variants and the predeclared decision status**
 
 Change the public signature to:
 
@@ -916,7 +916,7 @@ if (
 
 The `history_minus_current_window` comparison is interpretive: if its interval includes zero, report that H30 history adds no demonstrated advantage over the latest 30-second window, but do not change the Trend label.
 
-- [ ] **Step 8: Export evaluator interfaces in sorted order**
+- [x] **Step 8: Export evaluator interfaces in sorted order**
 
 Update `src/glycoband/evaluation/__init__.py`:
 
@@ -935,7 +935,7 @@ __all__ = [
 ]
 ```
 
-- [ ] **Step 9: Run evaluator validation**
+- [x] **Step 9: Run evaluator validation**
 
 Run:
 
@@ -947,7 +947,7 @@ uv run --frozen mypy src/glycoband/evaluation/trend_baseline.py
 
 Expected: all commands exit `0`.
 
-- [ ] **Step 10: Commit the registered evaluator**
+- [x] **Step 10: Commit the registered evaluator**
 
 ```powershell
 git add -- src/glycoband/evaluation/trend_baseline.py src/glycoband/evaluation/__init__.py tests/evaluation/test_trend_baseline.py
@@ -969,7 +969,7 @@ git commit -m "feat(trend): add registered baseline controls"
 - Consumes: baseline YAML, source/split manifests, development endpoint Parquet, raw participant BVP, feature functions, and evaluator.
 - Produces: config, environment, manifests, features, metrics, per-participant metrics, predictions, diagnostic figures, summary, and trained development pipelines under one immutable experiment directory.
 
-- [ ] **Step 1: Add runner safety tests**
+- [x] **Step 1: Add runner safety tests**
 
 Create `tests/scripts/test_run_trend_baseline.py` with tests for:
 
@@ -1004,7 +1004,7 @@ def test_environment_record_does_not_claim_final_test_access(tmp_path: Path) -> 
 
 The endpoint fixture must contain train, validation, test, and excluded rows so the filter is exercised.
 
-- [ ] **Step 2: Run runner tests and confirm failure**
+- [x] **Step 2: Run runner tests and confirm failure**
 
 Run:
 
@@ -1014,7 +1014,7 @@ uv run --frozen pytest -q tests/scripts/test_run_trend_baseline.py
 
 Expected: failure because output refusal and environment recording are not implemented.
 
-- [ ] **Step 3: Implement output refusal and compact environment identity**
+- [x] **Step 3: Implement output refusal and compact environment identity**
 
 Add:
 
@@ -1054,7 +1054,7 @@ Refuse a real registered run when `git_dirty` is true. A fixture-only smoke test
 
 Capture the environment record before creating report files so the runner records the clean committed input state rather than its own newly generated artifacts.
 
-- [ ] **Step 4: Update the development feature path**
+- [x] **Step 4: Update the development feature path**
 
 Load the baseline config and split-manifest hash. Add `split_version="trend-split-v1"` to development endpoints after verifying the loaded split manifest version. For each participant:
 
@@ -1090,7 +1090,7 @@ participant_metrics.to_csv(report_dir / "per_participant.csv", index=False)
 )
 ```
 
-- [ ] **Step 5: Write the complete registered-development artifact set**
+- [x] **Step 5: Write the complete registered-development artifact set**
 
 The runner must create this exact structure:
 
@@ -1112,7 +1112,7 @@ reports/experiments/trend-baseline-v1/
 
 Copy the exact config and manifests used. Write development features to `data/interim/trend/trend-baseline-features-v1.parquet` with provenance. Do not include test rows in any generated file.
 
-- [ ] **Step 6: Generate interpretation-relevant figures**
+- [x] **Step 6: Generate interpretation-relevant figures**
 
 Implement:
 
@@ -1133,7 +1133,7 @@ def _plot_model_macro_f1(report: Mapping[str, Any], path: Path) -> None:
 
 Add a paired per-participant plot for the five variants and normalized validation confusion matrices for the three learned variants. Figures must expose weak participants, class confusion, and controls rather than decorate the report.
 
-- [ ] **Step 7: Write an evidence-bounded summary**
+- [x] **Step 7: Write an evidence-bounded summary**
 
 The summary generator must include:
 
@@ -1173,7 +1173,7 @@ Follow the predeclared Go/No-Go result. Do not open the final test in this lake.
 
 Populate numeric tables deterministically from `metrics.json`; do not manually transcribe metrics.
 
-- [ ] **Step 8: Run runner unit validation**
+- [x] **Step 8: Run runner unit validation**
 
 Run:
 
@@ -1185,7 +1185,7 @@ uv run --frozen mypy scripts/run_trend_baseline.py
 
 Expected: all commands exit `0`.
 
-- [ ] **Step 9: Commit the runner before any real experiment**
+- [x] **Step 9: Commit the runner before any real experiment**
 
 ```powershell
 git add -- scripts/run_trend_baseline.py tests/scripts/test_run_trend_baseline.py
@@ -1206,7 +1206,7 @@ git commit -m "feat(trend): add reproducible baseline runner"
 - Consumes: the fully committed scientific anchor, feature contract, evaluator, controls, and runner.
 - Produces: one immutable development-validation evidence package plus an independent `PASS`, `REPAIR`, or `BLOCKED` verdict.
 
-- [ ] **Step 1: Run the full locked preflight before the real experiment**
+- [x] **Step 1: Run the full locked preflight before the real experiment**
 
 Run serially:
 
@@ -1221,7 +1221,7 @@ git status --porcelain
 
 Expected: all commands exit `0`, and Git status is empty in the execution worktree.
 
-- [ ] **Step 2: Run the real train/validation experiment once**
+- [x] **Step 2: Run the real train/validation experiment once**
 
 Run:
 
@@ -1231,7 +1231,7 @@ uv run --frozen python scripts/run_trend_baseline.py
 
 Expected live progress: one participant at a time, development endpoint counts, feature counts, final headline validation metrics, artifact paths, and `final_test_accessed=false`. Do not persist the full terminal transcript.
 
-- [ ] **Step 3: Verify no final-test rows entered any artifact**
+- [x] **Step 3: Verify no final-test rows entered any artifact**
 
 Run:
 
@@ -1241,7 +1241,7 @@ uv run --frozen python -c "import json,pandas as pd,pathlib; root=pathlib.Path('
 
 Expected: `PASS final test sealed`.
 
-- [ ] **Step 4: Verify artifact completeness and cross-references**
+- [x] **Step 4: Verify artifact completeness and cross-references**
 
 Run:
 
@@ -1251,7 +1251,7 @@ uv run --frozen python -c "import json,pathlib,yaml; p=pathlib.Path('reports/exp
 
 Expected: `PASS artifact contract`.
 
-- [ ] **Step 5: Perform independent read-only evaluation**
+- [x] **Step 5: Perform independent read-only evaluation**
 
 The evaluator must inspect the actual config, manifests, feature schema, metrics, per-participant table, predictions, figures, and Git diff. Return:
 
@@ -1269,7 +1269,7 @@ Overall: PASS | REPAIR | BLOCKED
 
 Any objective in-scope `REPAIR` finding returns to its owning task, followed by rerunning the failed check and this independent evaluation. The evaluator must not repair its own findings.
 
-- [ ] **Step 6: Record the ignored feature artifact by identity and commit only after independent PASS**
+- [x] **Step 6: Record the ignored feature artifact by identity and commit only after independent PASS**
 
 Before committing the report, add the feature artifact's relative path, SHA-256, row count, column schema, and regeneration command to `dataset_manifest.json`. Verify the recorded digest:
 
@@ -1301,7 +1301,7 @@ Keep the development feature Parquet ignored according to repository storage pol
 - Consumes: independently passed `trend-baseline-v1` artifacts.
 - Produces: a compact project-status update and the next scientific decision without changing Gate D or final-test status.
 
-- [ ] **Step 1: Append one evidence record to the journal**
+- [x] **Step 1: Append one evidence record to the journal**
 
 Use this exact structure with numeric values copied programmatically from `metrics.json`:
 
@@ -1327,11 +1327,11 @@ Recommended next action:
 Follow the predeclared decision: either stop Trend model expansion, repair a demonstrated validity defect, or authorize one classical-model comparison. Do not open the final test from this result alone.
 ```
 
-- [ ] **Step 2: Update README status with the evidence level, not a marketing claim**
+- [x] **Step 2: Update README status with the evidence level, not a marketing claim**
 
 Replace the “next Trend lake is registered baseline development” sentence with one sentence stating that `trend-baseline-v1` is complete on development validation, naming its decision status, and explicitly saying the final test remains sealed.
 
-- [ ] **Step 3: Verify status consistency**
+- [x] **Step 3: Verify status consistency**
 
 Run:
 
@@ -1342,7 +1342,7 @@ git diff --check
 
 Expected: State remains parked; D-Trend remains passed; `SCI-FINAL-TEST` remains sealed; no text claims held-out, clinical, or device validation.
 
-- [ ] **Step 4: Run final locked verification**
+- [x] **Step 4: Run final locked verification**
 
 Run serially:
 
@@ -1356,7 +1356,7 @@ uv run --frozen mypy
 
 Expected: every command exits `0`.
 
-- [ ] **Step 5: Commit the handoff**
+- [x] **Step 5: Commit the handoff**
 
 ```powershell
 git add -- docs/research/journal.md README.md
