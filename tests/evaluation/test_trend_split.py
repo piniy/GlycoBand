@@ -23,10 +23,12 @@ def endpoint_frame() -> pd.DataFrame:
             rows.append(
                 {
                     "participant_id": participant_id,
+                    "protocol_version": "trend-label-v1",
                     "timestamp": timestamp,
                     "history_start": timestamp - pd.Timedelta(minutes=30),
                     "label": ("RISING", "STABLE", "FALLING")[index % 3],
                     "support_points": 7,
+                    "slope_method": "ols",
                     "bvp_source_file": f"{participant_id}/BVP_{participant_id}.csv",
                     "cgm_source_file": f"{participant_id}/Dexcom_{participant_id}.csv",
                 }
@@ -65,7 +67,7 @@ def test_validate_trend_splits_rejects_history_crossing_embargo(
     validation_index = split.index[split["split"] == "validation"][0]
     split.loc[validation_index, "history_start"] = train["timestamp"]
 
-    with pytest.raises(ValueError, match="raw history|embargo"):
+    with pytest.raises(ValueError, match="raw history|embargo|30-minute history"):
         validate_trend_splits(split, protocol)
 
 

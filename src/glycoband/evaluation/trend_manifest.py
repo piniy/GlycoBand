@@ -16,11 +16,23 @@ def build_manifest_payload(
     *,
     git_revision: str | None,
     git_dirty: bool | None,
+    endpoint_artifact_sha256: str,
+    source_manifest_sha256: str,
 ) -> dict[str, object]:
     """Create a JSON-serializable manifest from a validated split frame."""
 
     validate_endpoint_frame(split_frame, protocol)
     validate_trend_splits(split_frame, protocol)
+    if not git_revision or git_dirty is not False:
+        raise ValueError("Frozen Trend manifest requires a clean Git revision")
+    for name, digest in (
+        ("endpoint artifact", endpoint_artifact_sha256),
+        ("source manifest", source_manifest_sha256),
+    ):
+        if len(digest) != 64 or any(
+            character not in "0123456789abcdefABCDEF" for character in digest
+        ):
+            raise ValueError(f"{name} SHA-256 is invalid")
     required_provenance = {"protocol_version", "bvp_source_file", "cgm_source_file"}
     missing = required_provenance.difference(split_frame.columns)
     if missing:
@@ -70,6 +82,11 @@ def build_manifest_payload(
         "registered_model_started": False,
         "git_revision": git_revision,
         "git_dirty": git_dirty,
+        "endpoint_artifact": {
+            "path": "data/interim/trend/trend-label-v1.parquet",
+            "sha256": endpoint_artifact_sha256.lower(),
+        },
+        "source_manifest_sha256": source_manifest_sha256.lower(),
         "protocol": asdict(protocol),
         "participants": participants,
         "endpoint_identity": ["participant_id", "timestamp"],

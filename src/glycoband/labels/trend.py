@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping
 from dataclasses import dataclass
 from numbers import Real
@@ -12,13 +13,16 @@ import pandas as pd
 import yaml
 
 TREND_CLASSES = ("FALLING", "STABLE", "RISING")
+BIG_IDEAS_CGM_CADENCE_MINUTES = 5
 REQUIRED_ENDPOINT_COLUMNS = frozenset(
     {
         "participant_id",
+        "protocol_version",
         "timestamp",
         "history_start",
         "label",
         "support_points",
+        "slope_method",
         "bvp_source_file",
         "cgm_source_file",
     }
@@ -168,14 +172,28 @@ def validate_endpoint_frame(frame: pd.DataFrame, protocol: TrendProtocol) -> Non
         raise ValueError("Trend endpoint frame contains duplicate participant/timestamp identities")
     if frame["label"].isna().any() or not frame["label"].isin(protocol.classes).all():
         raise ValueError("Trend endpoint frame contains an invalid Trend label")
-    if (frame["support_points"] <= 0).any():
-        raise ValueError("Trend endpoint frame contains non-positive CGM support")
     timestamps = pd.to_datetime(frame["timestamp"], errors="coerce")
     history_start = pd.to_datetime(frame["history_start"], errors="coerce")
     if timestamps.isna().any() or history_start.isna().any():
         raise ValueError("Trend endpoint timestamps must be parseable")
     if not (history_start < timestamps).all():
         raise ValueError("Every Trend history_start must precede its endpoint timestamp")
+    expected_history = pd.Timedelta(minutes=protocol.history_minutes)
+    if not ((timestamps - history_start) == expected_history).all():
+        raise ValueError("Every Trend endpoint must retain the frozen 30-minute history")
+    minimum_support = math.ceil(
+        (protocol.history_minutes / BIG_IDEAS_CGM_CADENCE_MINUTES + 1)
+        * protocol.minimum_support_fraction
+    )
+    if (frame["support_points"] < minimum_support).any():
+        raise ValueError("Trend endpoint does not satisfy frozen CGM support")
+    if not (frame["protocol_version"].astype(str) == protocol.version).all():
+        raise ValueError("Trend endpoint protocol version does not match the frozen contract")
+    if not (frame["slope_method"].astype(str) == protocol.slope_method).all():
+        raise ValueError("Trend endpoint slope method does not match the frozen contract")
+    for column in ("participant_id", "bvp_source_file", "cgm_source_file"):
+        if frame[column].isna().any() or frame[column].astype(str).str.strip().eq("").any():
+            raise ValueError(f"Trend endpoint column {column!r} contains empty provenance")
     if "available_cgm_end" in frame.columns:
         available_end = pd.to_datetime(frame["available_cgm_end"], errors="coerce")
         if available_end.isna().any() or (timestamps > available_end).any():

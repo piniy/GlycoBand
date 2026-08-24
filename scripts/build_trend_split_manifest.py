@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 from pathlib import Path
@@ -52,6 +53,14 @@ def _git_dirty(root: Path) -> bool | None:
         return None
 
 
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def _endpoint_labels(
     root: Path, protocol: TrendProtocol, audit_config: dict[str, Any]
 ) -> pd.DataFrame:
@@ -90,6 +99,7 @@ def _endpoint_labels(
         labels.insert(1, "protocol_version", protocol.version)
         labels.insert(2, "bvp_source_file", bvp_source)
         labels.insert(3, "cgm_source_file", cgm_source)
+        labels["slope_method"] = protocol.slope_method
         labels["available_cgm_end"] = cgm["timestamp"].max()
         frames.append(labels)
         print(
@@ -131,6 +141,8 @@ def main() -> int:
         protocol,
         git_revision=_git_revision(root),
         git_dirty=_git_dirty(root),
+        endpoint_artifact_sha256=_sha256(endpoint_path),
+        source_manifest_sha256=_sha256(root / "data/manifests/source_manifest.json"),
     )
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(f"[trend-split-v1] endpoint_artifact={endpoint_path}", flush=True)

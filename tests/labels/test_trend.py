@@ -20,6 +20,7 @@ def _endpoints() -> pd.DataFrame:
     return pd.DataFrame(
         {
             "participant_id": ["001", "001", "002"],
+            "protocol_version": ["trend-label-v1"] * 3,
             "timestamp": pd.to_datetime(
                 ["2020-01-01 00:30", "2020-01-01 00:35", "2020-01-01 00:30"]
             ),
@@ -28,6 +29,7 @@ def _endpoints() -> pd.DataFrame:
             ),
             "label": ["RISING", "STABLE", "FALLING"],
             "support_points": [7, 7, 7],
+            "slope_method": ["ols"] * 3,
             "bvp_source_file": ["001/BVP_001.csv"] * 2 + ["002/BVP_002.csv"],
             "cgm_source_file": ["001/Dexcom_001.csv"] * 2 + ["002/Dexcom_002.csv"],
         }
@@ -108,4 +110,31 @@ def test_validate_endpoint_frame_rejects_future_or_invalid_rows() -> None:
     frame = _endpoints().copy()
     frame.loc[0, "label"] = "UNKNOWN"
     with pytest.raises(ValueError, match="invalid Trend label"):
+        validate_endpoint_frame(frame, protocol)
+
+
+def test_validate_endpoint_frame_rejects_wrong_history_duration() -> None:
+    protocol = load_trend_protocol(_protocol_path())
+    frame = _endpoints().copy()
+    frame.loc[0, "history_start"] = frame.loc[0, "timestamp"] - pd.Timedelta(minutes=15)
+
+    with pytest.raises(ValueError, match="30-minute history"):
+        validate_endpoint_frame(frame, protocol)
+
+
+def test_validate_endpoint_frame_rejects_insufficient_cgm_support() -> None:
+    protocol = load_trend_protocol(_protocol_path())
+    frame = _endpoints().copy()
+    frame.loc[0, "support_points"] = 1
+
+    with pytest.raises(ValueError, match="CGM support"):
+        validate_endpoint_frame(frame, protocol)
+
+
+def test_validate_endpoint_frame_rejects_protocol_provenance_mismatch() -> None:
+    protocol = load_trend_protocol(_protocol_path())
+    frame = _endpoints().copy()
+    frame.loc[0, "protocol_version"] = "wrong-version"
+
+    with pytest.raises(ValueError, match="protocol version"):
         validate_endpoint_frame(frame, protocol)
