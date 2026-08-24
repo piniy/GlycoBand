@@ -159,3 +159,20 @@ Evidence refs:
 - reports/experiments/trend-baseline-v1/metrics.json
 - reports/experiments/trend-baseline-v1/figures/
 - data/interim/trend/trend-baseline-features-v1.parquet
+
+## 2026-08-25 — Trend split provenance repaired
+
+Question:
+Can the frozen Trend split be regenerated after the project-lead approval is versioned and from a clean, reproducible Git revision?
+
+Evidence / implementation:
+The signed Gate D approval was committed before regeneration. The endpoint Parquet and source manifest now have SHA-256 identities in `trend-split-v1`, and the manifest records `git_dirty=false` for the exact generator revision.
+
+Finding:
+The Trend label and chronological split now provide a clean registered-development anchor. Endpoint counts and split boundaries are unchanged from the approved package.
+
+What this does not prove:
+This repair does not establish BVP learnability and does not authorize final-test access.
+
+Decision / next direction:
+Proceed to the predeclared train/validation-only baseline feature and control package.

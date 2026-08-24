@@ -14,8 +14,13 @@
   "final_test_accessed": false,
   "chronological_split_created": true,
   "registered_model_started": false,
-  "git_revision": "7633e0a3d412e529e3b967167a1463f4396bb201",
-  "git_dirty": true,
+  "git_revision": "1decee6eadf2b840b6f4f3b867d01d4fdc948d45",
+  "git_dirty": false,
+  "endpoint_artifact": {
+    "path": "data/interim/trend/trend-label-v1.parquet",
+    "sha256": "dd114a8bd285003a6d6a9127bd773eac00b93546fc519c72d4e1f17f46bdf722"
+  },
+  "source_manifest_sha256": "7f3d8674fc0ab70e4fa4844615b02c8b5d7bd8ceac8c021f770ed5de93c2b52a",
   "protocol": {
     "version": "trend-label-v1",
     "dataset_name": "big_ideas",
