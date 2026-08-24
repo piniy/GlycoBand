@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "captured_at_utc": "2026-08-15T16:13:46.733208+00:00",
+  "captured_at_utc": "2026-08-24T18:53:08.549320+00:00",
   "repository": {
-    "commit": "2c8a5133b4e5af9ca0207217b1c7b6777cbd0f0b",
+    "commit": "dd997a0cc125c4cd4d8b7fb27217909357abc068",
     "dirty": false
   },
   "runtime": {
@@ -52,7 +52,7 @@
       ],
       "passed": true,
       "return_code": 0,
-      "summary": "Resolved 51 packages in 0.68ms"
+      "summary": "Resolved 51 packages in 1ms"
     },
     {
       "name": "tests",
@@ -65,7 +65,7 @@
       ],
       "passed": true,
       "return_code": 0,
-      "summary": "..................................................                       [100%]\n50 passed in 1.91s"
+      "summary": "................................................................         [100%]\n64 passed in 105.98s (0:01:45)"
     },
     {
       "name": "lint",
@@ -91,7 +91,7 @@
       ],
       "passed": true,
       "return_code": 0,
-      "summary": "Success: no issues found in 16 source files"
+      "summary": "Success: no issues found in 20 source files"
     }
   ],
   "environment_gate": "PASS"
