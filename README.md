@@ -60,12 +60,14 @@ Do not modify raw files. Store checksums and source/version records in `data/man
 
 ## Current frontier: Trend
 
-The active work is to establish the BIG IDEAs Trend label protocol and chronological split using
-development data only. The State decision record is
+The BIG IDEAs Trend label protocol and chronological split are now versioned for registered
+development: trend-label-v1 and trend-split-v1. The generated endpoint artifact contains
+27,913 causal endpoints from 16 participants; 27,529 remain usable after 384 embargo exclusions.
+The State decision record is
 [`docs/research/decision_register.md`](docs/research/decision_register.md), and its final
 development-only resolution is in
 [`reports/probes/state_exploratory-v1/decision_record.md`](reports/probes/state_exploratory-v1/decision_record.md).
 The 44-person State reserve remains sealed; reopening State requires an explicit project-lead
 decision.
 
-The completed preparation sequence is retained in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). After the Trend label and split contracts are frozen, its task-specific baseline may use training and validation partitions only. The final test remains sealed until its separate access decision is frozen.
+The completed preparation sequence is retained in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). The next Trend lake is registered baseline development using training and validation partitions only. The final test remains sealed until its separate access decision is frozen.

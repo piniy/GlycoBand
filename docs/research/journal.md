@@ -84,3 +84,36 @@ Evidence refs:
 - `reports/experiments/trend_endpoint_stability-v1/pooled_pairwise.csv`
 - `reports/experiments/trend_endpoint_stability-v1/per_participant_pairwise.csv`
 - `reports/experiments/trend_endpoint_stability-v1/figures/`
+
+## 2026-08-25 — Trend protocol and chronological split frozen
+
+Question:
+Can the approved Trend label and chronological separation contract be generated reproducibly
+from immutable BIG IDEAs v1.1.3 data without opening final-test performance?
+
+Evidence / implementation:
+Project-lead approval was recorded in docs/research/gate_d_decision_brief.md. The approved
+H30 / tau0.5 / median3 / OLS protocol was regenerated participant-wise from the verified raw
+files. The split validator assigned within-person chronological 60% train, 20% validation, and
+20% test bands, excluding a 30-minute embargo at each boundary and checking raw-history gaps.
+
+Finding:
+All 16 participants produced 27,913 causal endpoints. The manifest contains 16,652 train,
+5,386 validation, 5,491 test, and 384 excluded-embargo endpoints. No raw-history boundary
+violations were observed. The manifest records final_test_accessed=false and
+registered_model_started=false.
+
+What this does not prove:
+The contract does not establish BVP learnability, validate a device, or support clinical or
+treatment claims. No registered Trend model has been trained and no final-test result exists.
+
+Decision / next direction:
+Freeze trend-label-v1 and trend-split-v1 for registered development. Build the majority,
+always-STABLE, and Logistic Regression baselines next using only the training and validation
+partitions. Keep the final test sealed.
+
+Evidence refs:
+- configs/trend/label-v1.yaml
+- data/manifests/trend_split-v1.json
+- data/interim/trend/trend-label-v1.parquet
+- src/glycoband/evaluation/trend_split.py

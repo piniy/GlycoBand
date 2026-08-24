@@ -1,0 +1,20 @@
+version: trend-label-v1
+dataset:
+  name: big_ideas
+  version: 1.1.3
+label:
+  classes: [FALLING, STABLE, RISING]
+  source: cgm_history_ending_at_t
+  history_minutes: 30
+  smoothing: median3
+  slope_method: ols
+  threshold_mg_dl_min: 0.5
+  minimum_cgm_support_fraction: 0.80
+  maximum_cgm_gap_minutes: 10.0
+  requires_continuous_bvp_history: true
+split:
+  type: within_person_chronological
+  train_fraction: 0.60
+  validation_fraction: 0.20
+  test_fraction: 0.20
+  embargo_minutes: 30
