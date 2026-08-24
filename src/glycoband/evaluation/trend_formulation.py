@@ -7,6 +7,7 @@ chronological split, fit a model, or access a reserved test set.
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import Any, cast
 
 import pandas as pd
 
@@ -80,7 +81,7 @@ def _check_columns(candidates: pd.DataFrame) -> None:
 def _protocol_mask(frame: pd.DataFrame, protocol: dict[str, object]) -> pd.Series:
     mask = pd.Series(True, index=frame.index)
     for column in PROTOCOL_COLUMNS:
-        mask &= frame[column].eq(protocol[column])
+        mask &= frame[column].eq(cast(Any, protocol[column]))
     return mask
 
 
@@ -161,7 +162,7 @@ def participant_compositions(
     frames: list[pd.DataFrame] = []
     for protocol in shortlist:
         selected = candidates.loc[_protocol_mask(candidates, protocol)].copy()
-        selected["candidate_id"] = protocol["candidate_id"]
+        selected["candidate_id"] = str(protocol["candidate_id"])
         selected["total"] = selected[CLASS_COLUMNS].sum(axis=1)
         for column in CLASS_COLUMNS:
             selected[f"{column}_fraction"] = selected[column] / selected["total"]
