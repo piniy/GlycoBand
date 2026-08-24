@@ -48,3 +48,5 @@ Approval is intentionally human for the remaining Trend decisions. State label m
 recorded as `SCI-STATE-LABEL = FROZEN`, but State has no active split or model recommendation.
 Registered State modeling and final evaluation may not begin unless the project lead explicitly
 reopens State.
+
+APPROVE TREND GATE D PACKAGE - RNA
