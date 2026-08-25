@@ -1,0 +1,19 @@
+{
+  "dataset": "BIG IDEAs v1.1.3",
+  "endpoint_artifact": {
+    "path": "data/interim/trend/trend-label-v1.parquet",
+    "sha256": "dd114a8bd285003a6d6a9127bd773eac00b93546fc519c72d4e1f17f46bdf722",
+    "development_rows": 22038
+  },
+  "feature_artifact": {
+    "path": "data/interim/trend/trend-baseline-features-v1.parquet",
+    "sha256": "1c4710ab5ab2e214b8723ceef422c4cd2f3e42c88b82ae26f2f62471407a770d",
+    "development_rows": 22038
+  },
+  "participant_count": 16,
+  "development_splits": [
+    "train",
+    "validation"
+  ],
+  "final_test_accessed": false
+}

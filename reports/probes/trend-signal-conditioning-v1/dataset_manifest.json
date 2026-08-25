@@ -1,0 +1,9 @@
+{
+  "endpoint_artifact_sha256": "dd114a8bd285003a6d6a9127bd773eac00b93546fc519c72d4e1f17f46bdf722",
+  "baseline_feature_artifact_sha256": "1c4710ab5ab2e214b8723ceef422c4cd2f3e42c88b82ae26f2f62471407a770d",
+  "window_artifact": "data/interim/trend/trend-feature-v2-windows.parquet",
+  "endpoint_feature_artifact": "data/interim/trend/trend-feature-v2-endpoints.parquet",
+  "participants": 16,
+  "development_rows": 22038,
+  "final_test_accessed": false
+}

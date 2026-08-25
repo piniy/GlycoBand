@@ -1,0 +1,16 @@
+{
+  "selected_variant": "bp_0p5_8_zscore__report_only",
+  "decision": "NOT_SUPPORTED_BY_CONDITIONING",
+  "decision_reason": "No conditioning variant improved validation Macro-F1 by 0.02 with nonzero recall in both directions; hard SQI exclusion improved only 0.0022 and retained 91.8% of validation rows.",
+  "selected_validation_macro_f1": 0.2879250415695183,
+  "raw_anchor_validation_macro_f1": 0.28894083540270304,
+  "hard_sqi_validation_retention": 0.9177497215001856,
+  "conditioned_max_absolute_pooled_slope_correlation": 0.040010056403059914,
+  "inner_train_macro_f1": {
+    "bp_0p5_8_zscore__report_only": 0.2950359306539408,
+    "bp_0p7_4_robust__report_only": 0.29303876719914856
+  },
+  "variant_count": 9,
+  "validation_weighted": false,
+  "final_test_accessed": false
+}

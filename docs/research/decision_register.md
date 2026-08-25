@@ -17,6 +17,7 @@ decision automatically.
 | SCI-TREND-SPLIT | Trend chronological split | `FROZEN` | `trend-split-v1`: within-person chronological 60/20/20 with 30-minute embargo | `data/manifests/trend_split-v1.json`; split validator and raw-history audit | Confirmatory/final Trend evaluation |
 | SCI-FINAL-TEST | Final-test access | `SEALED` | — | Frozen label, split, preprocessing, features, model, hyperparameters, calibration/OOD, success criteria | Final evaluation |
 | CLAIM-CEILING | Maximum defensible claim | `FEASIBILITY_ONLY` | Feasibility research only | Native held-out evidence + leakage/negative controls + uncertainty + domain limits | Stronger claims |
+| SCI-TREND-CONDITIONING-FRONTIER | Conditioning/SQI exploratory frontier | `NOT_SUPPORTED_BY_CONDITIONING` | Phase 0/1 development-only probe did not establish a meaningful stable gain | `reports/probes/trend-signal-diagnostics-v1/`; `reports/probes/trend-signal-conditioning-v1/` | Phase 2+ feature/model expansion and final evaluation |
 
 ## Frozen decision record
 
@@ -48,6 +49,19 @@ Date: 2026-08-25
 
 Trend is now frozen for registered development only. This does not establish BVP learnability,
 device validity, clinical utility, or permission to open final-test results.
+
+## Trend exploratory frontier record
+
+ID: SCI-TREND-CONDITIONING-FRONTIER
+Status: `NOT_SUPPORTED_BY_CONDITIONING`
+Evidence: Phase 0 diagnostics and Phase 1 conditioning/SQI probe on development partitions only
+Result: The selected conditioned candidate reached validation Macro-F1 `0.2879` versus the raw
+anchor `0.2889`; hard SQI exclusion retained `91.8%` of validation endpoints and did not recover
+directional recall.
+Date: 2026-08-25
+
+This closes the current Trend conditioning frontier. It is exploratory feasibility evidence, not
+registered or final-test evidence. Phase 2+, deep learning, and final-test evaluation remain closed.
 
 ## Exploratory status
 

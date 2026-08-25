@@ -1,0 +1,34 @@
+experiment:
+  id: trend-signal-learnability-v1
+  evidence_level: exploratory_development
+  claim_ceiling: feasibility_only
+dataset:
+  name: big_ideas
+  version: 1.1.3
+  independent_unit: participant
+label:
+  version: trend-label-v1
+split:
+  version: trend-split-v1
+  allowed_development_splits: [train, validation]
+  forbidden_splits: [test, excluded_embargo]
+diagnostics:
+  flat_fraction_thresholds: [0.01, 0.05, 0.10]
+  correlation_methods: [pearson, spearman]
+  class_order: [FALLING, STABLE, RISING]
+conditioning:
+  variants:
+    - raw_anchor
+    - bp_0p5_8_zscore
+    - bp_0p7_4_robust
+  bvp_rate_hz: 64
+  short_window_seconds: 30
+quality_policies:
+  - report_only
+  - soft_weight
+  - hard_exclude_bottom_train_decile
+soft_weight:
+  minimum_weight: 0.25
+hard_exclusion:
+  train_quantile: 0.10
+  minimum_validation_retention: 0.80

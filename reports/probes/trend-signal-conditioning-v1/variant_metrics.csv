@@ -1,0 +1,10 @@
+variant,quality_policy,train_rows,validation_rows,validation_retention,macro_f1,balanced_accuracy,falling_recall,rising_recall,validation_weighted,variant_policy,common_endpoint_macro_f1
+raw_anchor__report_only,report_only,16652,5386,1.0,0.28894083540270304,0.33428498471717244,0.0031007751937984496,0.0,False,raw_anchor__report_only,
+bp_0p5_8_zscore__report_only,report_only,16652,5386,1.0,0.2879250415695183,0.3338501291989664,0.0015503875968992248,0.0,False,bp_0p5_8_zscore__report_only,
+bp_0p5_8_zscore__soft_weight,report_only,16652,5386,1.0,0.2879250415695183,0.3338501291989664,0.0015503875968992248,0.0,False,bp_0p5_8_zscore__soft_weight,
+bp_0p5_8_zscore__hard_exclude_bottom_train_decile,hard_exclude_bottom_train_decile,14985,4943,0.9177497215001856,0.29112727758937146,0.33420132069854075,0.003663003663003663,0.0,False,bp_0p5_8_zscore__hard_exclude_bottom_train_decile,0.29112727758937146
+bp_0p7_4_robust__report_only,report_only,16652,5386,1.0,0.28686270361751637,0.3333333333333333,0.0,0.0,False,bp_0p7_4_robust__report_only,
+bp_0p7_4_robust__soft_weight,report_only,16652,5386,1.0,0.28686270361751637,0.3333333333333333,0.0,0.0,False,bp_0p7_4_robust__soft_weight,
+bp_0p7_4_robust__hard_exclude_bottom_train_decile,hard_exclude_bottom_train_decile,14988,4943,0.9177497215001856,0.28876146788990825,0.3333333333333333,0.0,0.0,False,bp_0p7_4_robust__hard_exclude_bottom_train_decile,0.28876146788990825
+bp_0p5_8_zscore__train_participant_robust_scale,report_only,16652,5386,1.0,0.28672241628735756,0.332923631596198,0.0,0.0,False,bp_0p5_8_zscore__train_participant_robust_scale,
+selected__large_circular_shift_control,report_only,16652,5386,1.0,0.2954615941279851,0.3333333333333333,0.0,0.0,False,selected__large_circular_shift_control,

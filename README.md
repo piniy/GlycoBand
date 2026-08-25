@@ -58,7 +58,7 @@ data/raw/bigideas/
 
 Do not modify raw files. Store checksums and source/version records in `data/manifests/`; write aligned native-derived data to `data/interim/` and model-ready data to `data/processed/`.
 
-## Current frontier: Trend
+## Current frontier: Trend conditioning gate
 
 The BIG IDEAs Trend label protocol and chronological split are now versioned for registered
 development: trend-label-v1 and trend-split-v1. The generated endpoint artifact contains
@@ -70,4 +70,4 @@ development-only resolution is in
 The 44-person State reserve remains sealed; reopening State requires an explicit project-lead
 decision.
 
-The completed preparation sequence is retained in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). Trend registered baseline development is complete on training and validation partitions: the predeclared result is `not_supported_for_classical_followup`, and the final test remains sealed.
+The completed preparation sequence is retained in the [Research Start Readiness Plan](docs/superpowers/plans/2026-08-15-glycoband-research-start-readiness.md). Phase 0 diagnostics and the Phase 1 conditioning/SQI probe used training and validation partitions only. The final frontier is `NOT_SUPPORTED_BY_CONDITIONING`: the selected conditioned candidate reached validation Macro-F1 `0.2879` versus the raw anchor `0.2889`; hard SQI exclusion retained `91.8%` of validation endpoints without recovering directional recall. See [`reports/probes/trend-signal-conditioning-v1/summary.md`](reports/probes/trend-signal-conditioning-v1/summary.md). Phase 2+, deep learning, and final-test evaluation remain closed; the final test is sealed.

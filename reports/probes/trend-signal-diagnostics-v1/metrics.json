@@ -1,0 +1,30 @@
+{
+  "experiment": {
+    "id": "trend-signal-learnability-v1",
+    "evidence_level": "exploratory_development",
+    "claim_ceiling": "feasibility_only"
+  },
+  "class_counts": {
+    "train": {
+      "FALLING": 2000,
+      "RISING": 1988,
+      "STABLE": 12664
+    },
+    "validation": {
+      "FALLING": 645,
+      "RISING": 673,
+      "STABLE": 4068
+    }
+  },
+  "slope_threshold_mg_dl_min": 0.5,
+  "phase0_gate": {
+    "status": "PASS",
+    "missing_falling_participants": 0,
+    "missing_rising_participants": 0,
+    "median_directional_fraction": 0.2455935368978847,
+    "minimum_directional_fraction": 0.05,
+    "maximum_missing_directional_participants": 4,
+    "reasons": []
+  },
+  "final_test_accessed": false
+}
