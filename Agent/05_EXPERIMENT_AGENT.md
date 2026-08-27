@@ -87,14 +87,17 @@ Go / No-Go criterion:
 Claim ceiling:
 ```
 
-If a required field is unresolved and affects validity:
+If a required field is unresolved and affects validity, stop registered or final-evidence work for that track.
 
-- do not run a registered or final-evidence experiment;
-- determine whether a bounded development-only exploratory probe can reduce the uncertainty;
-- if yes, run or recommend the cheapest adequate probe;
-- if no, request project-lead review.
+A safe development-only exploratory probe may still proceed when it is the cheapest adequate way to reduce the uncertainty.
 
-Exploratory results cannot automatically freeze the scientific decision.
+Exploratory probes:
+
+- use development data only;
+- do not access final-test performance;
+- do not produce confirmatory evidence;
+- do not automatically freeze the unresolved decision;
+- should end with findings and a recommendation.
 
 ## Mandatory pre-freeze question
 

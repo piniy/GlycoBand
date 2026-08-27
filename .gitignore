@@ -6,6 +6,7 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .venv/
+tmp/
 
 # Editors and operating systems
 .idea/
